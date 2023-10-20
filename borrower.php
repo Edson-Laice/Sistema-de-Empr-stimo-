@@ -1,8 +1,8 @@
 <?php
-	date_default_timezone_set("Etc/GMT+8");
-	require_once 'session.php';
-	require_once 'class.php';
-	$db = new db_class();
+date_default_timezone_set("Etc/GMT+8");
+require_once 'session.php';
+require_once 'class.php';
+$db = new db_class();
 ?>
 <!DOCTYPE html>
 <html lang="pt">
@@ -101,15 +101,12 @@
 
 						<!-- Item de Navegação - Informações do Usuário -->
 						<li class="nav-item dropdown no-arrow">
-							<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-								data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								<span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo $db->user_acc($_SESSION['user_id'])?></span>
-								<img class="img-profile rounded-circle"
-									src="image/admin_profile.svg">
+							<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo $db->user_acc($_SESSION['user_id']) ?></span>
+								<img class="img-profile rounded-circle" src="image/admin_profile.svg">
 							</a>
 							<!-- Menu Suspenso - Informações do Usuário -->
-							<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-								aria-labelledby="userDropdown">
+							<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
 								<a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
 									<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
 									Sair
@@ -146,125 +143,137 @@
 											<th>Endereço</th>
 											<th>Email</th>
 											<th>Identificação Fiscal</th>
+											<th>Data de Nascimento</th>
+											<th>Nacionalidade</th>
+											<th>Naturalidade</th>
+											<th>Província</th>
+											<th>Número de BI/Passaporte</th>
+											<th>Emissor</th>
+											<th>Data de Emissão</th>
+											<th>Estado Civil</th>
+											<th>Sexo</th>
+											<th>Profissão</th>
+											<th>Residência</th>
+											<th>Bairro</th>
+											<th>Avenida/Rua</th>
+											<th>Casa/Flat Nº</th>
+											<th>Quarteirão</th>
 											<th>Ação</th>
 										</tr>
 									</thead>
 									<tbody>
 										<?php
-											$tbl_borrower = $db->display_borrower();
-											
-											while ($fetch = $tbl_borrower->fetch_array()) {
-										?>
-										<tr>
-											<td><?php echo $fetch['firstname']?></td>
-											<td><?php echo $fetch['middlename']?></td>
-											<td><?php echo $fetch['lastname']?></td>
-											<td><?php echo $fetch['contact_no']?></td>
-											<td><?php echo $fetch['address']?></td>
-											<td><?php echo $fetch['email']?></td>
-											<td><?php echo $fetch['tax_id']?></td>
-											<td>
-												<div class="dropdown">
-													<button class="btn btn-secondary dropdown-toggle" type="button"
-														id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-														aria-expanded="false">
-														Ação
-													</button>
-													<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-														<a class="dropdown-item bg-warning text-white" href="#"
-															data-toggle="modal" data-target="#updateborrower<?php echo $fetch['borrower_id']?>">Editar</a>
-														<a class="dropdown-item bg-danger text-white" href="#"
-															data-toggle="modal" data-target="#deleteborrower<?php echo $fetch['borrower_id']?>">Excluir</a>
-													</div>
-												</div>
-											</td>
-										</tr>
+										$tbl_borrower = $db->display_borrower();
 
-										<!-- Modal de Atualização de Tomador -->
-										<div class="modal fade" id="updateborrower<?php echo $fetch['borrower_id']?>" tabindex="-1"
-											aria-hidden="true">
-											<div class="modal-dialog">
-												<form method="POST" action="updateBorrower.php">
+										while ($fetch = $tbl_borrower->fetch_array()) {
+										?>
+											<tr>
+												<td><?php echo $fetch['firstname'] ?></td>
+												<td><?php echo $fetch['middlename'] ?></td>
+												<td><?php echo $fetch['lastname'] ?></td>
+												<td><?php echo $fetch['contact_no'] ?></td>
+												<td><?php echo $fetch['address'] ?></td>
+												<td><?php echo $fetch['email'] ?></td>
+												<td><?php echo $fetch['tax_id'] ?></td>
+												<td><?php echo $fetch['data_nascimento'] ?></td>
+												<td><?php echo $fetch['nacionalidade'] ?></td>
+												<td><?php echo $fetch['naturalidade'] ?></td>
+												<td><?php echo $fetch['provincia'] ?></td>
+												<td><?php echo $fetch['bi_passaport_n'] ?></td>
+												<td><?php echo $fetch['emissor'] ?></td>
+												<td><?php echo $fetch['data_emissao'] ?></td>
+												<td><?php echo $fetch['estado_civil'] ?></td>
+												<td><?php echo $fetch['sexo'] ?></td>
+												<td><?php echo $fetch['profissao'] ?></td>
+												<td><?php echo $fetch['residencia'] ?></td>
+												<td><?php echo $fetch['bairro'] ?></td>
+												<td><?php echo $fetch['av_rua'] ?></td>
+												<td><?php echo $fetch['casa_flat_n'] ?></td>
+												<td><?php echo $fetch['quarteirao'] ?></td>
+												<td>
+													<div class="dropdown">
+														<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+															Ação
+														</button>
+														<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+															<a class="dropdown-item bg-warning text-white" href="#" data-toggle="modal" data-target="#updateborrower<?php echo $fetch['borrower_id'] ?>">Editar</a>
+															<a class="dropdown-item bg-danger text-white" href="#" data-toggle="modal" data-target="#deleteborrower<?php echo $fetch['borrower_id'] ?>">Excluir</a>
+														</div>
+													</div>
+												</td>
+											</tr>
+
+											<!-- Modal de Atualização de Tomador -->
+											<div class="modal fade" id="updateborrower<?php echo $fetch['borrower_id'] ?>" tabindex="-1" aria-hidden="true">
+												<div class="modal-dialog">
+													<form method="POST" action="updateBorrower.php">
+														<div class="modal-content">
+															<div class="modal-header bg-warning">
+																<h5 class="modal-title text-white">Editar Tomador</h5>
+																<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+																	<span aria-hidden="true">×</span>
+																</button>
+															</div>
+															<div class="modal-body">
+																<div class="form-group">
+																	<label>Nome</label>
+																	<input type="text" name="firstname" value="<?php echo $fetch['firstname'] ?>" class="form-control" required="required" />
+																	<input type="hidden" name="borrower_id" value="<?php echo $fetch['borrower_id'] ?>" />
+																</div>
+																<div class="form-group">
+																	<label>Nome do Meio</label>
+																	<input type="text" name="middlename" value="<?php echo $fetch['middlename'] ?>" class="form-control" required="required" />
+																</div>
+																<div class="form-group">
+																	<label>Sobrenome</label>
+																	<input type="text" name="lastname" value="<?php echo $fetch['lastname'] ?>" class="form-control" required="required" />
+																</div>
+																<div class="form-group">
+																	<label>Número de Contato</label>
+																	<input type="tel" name="contact_no" value="<?php echo $fetch['contact_no'] ?>" class="form-control" placeholder="Ex.[0965 567 6544]" pattern="[0-9]{4} [0-9]{3} [0-9]{4}" required="required" />
+																</div>
+																<div class="form-group">
+																	<label>Endereço</label>
+																	<input type="text" name="address" value="<?php echo $fetch['address'] ?>" class="form-control" required="required" />
+																</div>
+																<div class="form-group">
+																	<label>Email</label>
+																	<input type="email" name="email" value="<?php echo $fetch['email'] ?>" class="form-control" required="required" maxlength="30" />
+																</div>
+																<div class="form-group">
+																	<label>Identificação Fiscal (deve ser válida)</label>
+																	<input type="number" name="tax_id" min="0" value="<?php echo $fetch['tax_id'] ?>" class="form-control" required="required" />
+																</div>
+															</div>
+															<div class="modal-footer">
+																<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+																<button type="submit" name="update" class="btn btn-warning">Atualizar</a>
+															</div>
+														</div>
+													</form>
+												</div>
+											</div>
+
+											<!-- Modal de Exclusão de Tomador -->
+											<div class="modal fade" id="deleteborrower<?php echo $fetch['borrower_id'] ?>" tabindex="-1" aria-hidden="true">
+												<div class="modal-dialog">
 													<div class="modal-content">
-														<div class="modal-header bg-warning">
-															<h5 class="modal-title text-white">Editar Tomador</h5>
-															<button class="close" type="button" data-dismiss="modal"
-																aria-label="Close">
+														<div class="modal-header bg-danger">
+															<h5 class="modal-title text-white">Informação do Sistema</h5>
+															<button class="close" type="button" data-dismiss="modal" aria-label="Close">
 																<span aria-hidden="true">×</span>
 															</button>
 														</div>
-														<div class="modal-body">
-															<div class="form-group">
-																<label>Nome</label>
-																<input type="text" name="firstname" value="<?php echo $fetch['firstname']?>"
-																	class="form-control" required="required" />
-																<input type="hidden" name="borrower_id"
-																	value="<?php echo $fetch['borrower_id']?>" />
-															</div>
-															<div class="form-group">
-																<label>Nome do Meio</label>
-																<input type="text" name="middlename"
-																	value="<?php echo $fetch['middlename']?>" class="form-control"
-																	required="required" />
-															</div>
-															<div class="form-group">
-																<label>Sobrenome</label>
-																<input type="text" name="lastname" value="<?php echo $fetch['lastname']?>"
-																	class="form-control" required="required" />
-															</div>
-															<div class="form-group">
-																<label>Número de Contato</label>
-																<input type="tel" name="contact_no"
-																	value="<?php echo $fetch['contact_no']?>" class="form-control"
-																	placeholder="Ex.[0965 567 6544]"
-																	pattern="[0-9]{4} [0-9]{3} [0-9]{4}" required="required" />
-															</div>
-															<div class="form-group">
-																<label>Endereço</label>
-																<input type="text" name="address" value="<?php echo $fetch['address']?>"
-																	class="form-control" required="required" />
-															</div>
-															<div class="form-group">
-																<label>Email</label>
-																<input type="email" name="email" value="<?php echo $fetch['email']?>"
-																	class="form-control" required="required" maxlength="30" />
-															</div>
-															<div class="form-group">
-																<label>Identificação Fiscal (deve ser válida)</label>
-																<input type="number" name="tax_id" min="0" value="<?php echo $fetch['tax_id']?>"
-																	class="form-control" required="required" />
-															</div>
-														</div>
+														<div class="modal-body">Tem certeza de que deseja excluir este registro?</div>
 														<div class="modal-footer">
 															<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
-															<button type="submit" name="update" class="btn btn-warning">Atualizar</a>
+															<a class="btn btn-danger" href="deleteBorrower.php?borrower_id=<?php echo $fetch['borrower_id'] ?>">Excluir</a>
 														</div>
-													</div>
-												</form>
-											</div>
-										</div>
-
-										<!-- Modal de Exclusão de Tomador -->
-										<div class="modal fade" id="deleteborrower<?php echo $fetch['borrower_id']?>" tabindex="-1"
-											aria-hidden="true">
-											<div class="modal-dialog">
-												<div class="modal-content">
-													<div class="modal-header bg-danger">
-														<h5 class="modal-title text-white">Informação do Sistema</h5>
-														<button class="close" type="button" data-dismiss="modal" aria-label="Close">
-															<span aria-hidden="true">×</span>
-														</button>
-													</div>
-													<div class="modal-body">Tem certeza de que deseja excluir este registro?</div>
-													<div class="modal-footer">
-														<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
-														<a class="btn btn-danger" href="deleteBorrower.php?borrower_id=<?php echo $fetch['borrower_id']?>">Excluir</a>
 													</div>
 												</div>
 											</div>
-										</div>
 										<?php
-											}
+										}
 										?>
 									</tbody>
 								</table>
@@ -278,7 +287,7 @@
 				<footer class="stocky-footer">
 					<div class="container my-auto">
 						<div class="copyright text-center my-auto">
-							<span>Direitos Autorais &copy; Sistema de Gerenciamento de Empréstimos <?php echo date("Y")?></span>
+							<span>Direitos Autorais &copy; Sistema de Gerenciamento de Empréstimos <?php echo date("Y") ?></span>
 						</div>
 					</div>
 				</footer>
@@ -296,97 +305,183 @@
 		</a>
 
 		<!-- Modal de Adicionar Tomador -->
-		<div class="modal fade" id="addModal" aria-hidden="true">
+		<div class="modal fade" id="addModal" aria-hidden="true" style="justify-content:center; align-items:center;">
 			<div class="modal-dialog">
 				<form method="POST" action="save_borrower.php">
-					<div class="modal-content">
-						<div class="modal-header bg-primary">
-							<h5 class="modal-title text-white">Formulário de Tomador</h5>
+					<div class="modal-content" style="width: 900px;">
+						<div class="modal-header">
+							<h5 class="modal-title ">Formulário do Mutuário</h5>
 							<button class="close" type="button" data-dismiss="modal" aria-label="Close">
 								<span aria-hidden="true">×</span>
 							</button>
 						</div>
 						<div class="modal-body">
-							<div class="form-group">
-								<label>Nome</label>
-								<input type="text" name="firstname" class="form-control" required="required" />
-							</div>
-							<div class="form-group">
-								<label>Nome do Meio</label>
-								<input type="text" name="middlename" class="form-control" required="required" />
-							</div>
-							<div class="form-group">
-								<label>Sobrenome</label>
-								<input type="text" name="lastname" class="form-control" required="required" />
-							</div>
-							<div class="form-group">
-								<label>Número de Contato</label>
-								<input type="tel" name="contact_no" class="form-control" placeholder="Ex.[+258 84 000 0000]"
-									 required="required" />
-							</div>
-							<div class="form-group">
-								<label>Endereço</label>
-								<input type="text" name="address" class="form-control" required="required" />
-							</div>
-							<div class="form-group">
-								<label>Email</label>
-								<input type="email" name="email" class="form-control" required="required" maxlength="30" />
-							</div>
-							<div class="form-group">
-								<label>Identificação Fiscal (deve ser válida)</label>
-								<input type="number" name="tax_id" min="0" class="form-control" required="required" />
-							</div>
-						</div>
-						<div class="modal-footer">
-							<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
-							<button type="submit" name="save" class="btn btn-primary">Salvar</button>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
+							<div class="row">
+								<div class="col">
+									<div class="form-group">
+										<label>Nome</label>
+										<input type="text" name="firstname" class="form-control" required="required" />
+									</div>
+									<div class="form-group">
+										<label>Nome do Meio</label>
+										<input type="text" name="middlename" class="form-control" required="required" />
+									</div>
+									<div class="form-group">
+										<label>Sobrenome</label>
+										<input type="text" name="lastname" class="form-control" required="required" />
+									</div>
+									<div class="form-group">
+										<label>Número de Contato</label>
+										<input type="tel" name="contact_no" class="form-control" placeholder="Ex.[+258 84 000 0000]" required="required" />
+									</div>
+									<div class="form-group">
+										<label>Endereço</label>
+										<input type="text" name="address" class="form-control" required="required" />
+									</div>
+									<div class="form-group">
+										<label>Email</label>
+										<input type="email" name="email" class="form-control" required="required" maxlength="30" />
+									</div>
+									<div class="form-group">
+										<label>Identificação Fiscal (deve ser válida)</label>
+										<input type="number" name="tax_id" min="0" class="form-control" required="required" />
+									</div>
 
-		<!-- Modal de Logout -->
-		<div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header bg-danger">
-						<h5 class="modal-title text-white">Informação do Sistema</h5>
-						<button class="close" type="button" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">×</span>
-						</button>
+									<div class="form-group">
+										<label for="data_nascimento">Data de Nascimento:</label>
+										<input type="date" class="form-control" id="data_nascimento" name="data_nascimento">
+									</div>
+									<div class="form-group">
+										<label for="nacionalidade">Nacionalidade:</label>
+										<input type="text" class="form-control" id="nacionalidade" name="nacionalidade">
+									</div>
+									<div class="form-group">
+										<label for="naturalidade">Naturalidade:</label>
+										<input type="text" class="form-control" id="naturalidade" name="naturalidade">
+									</div>
+									<div class="form-group">
+										<label for="provincia">Província:</label>
+										<input type="text" class="form-control" id="provincia" name="provincia">
+									</div>
+
+								</div>
+
+								<div class="col">
+
+									<div class="form-group">
+										<label for="borrowerSelect">Selecione o Estado Civil:</label>
+										<select class="form-control" id="borrowerSelect" name="estado_civil">
+											<option value="">Selecione um mutuário</option>
+											<option value="solteriro">Solteiro</option>
+											<option value="casado">Casado</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<label for="sexo">Sexo:</label>
+										<select class="form-control" id="sexo" name="sexo">
+											<option value="">Selecione o Genero</option>
+											<option value="m">Masculino</option>
+											<option value="s">Femenino</option>
+										</select>
+
+									</div>
+									<div class="form-group">
+										<label for="profissao">Profissão:</label>
+										<input type="text" class="form-control" id="profissao" name="profissao">
+									</div>
+									<div class="form-group">
+										<label for="residencia">Residência:</label>
+										<input type="text" class="form-control" id="residencia" name="residencia">
+									</div>
+									<div class="form-group">
+										<label for="bairro">Bairro:</label>
+										<input type="text" class="form-control" id="bairro" name="bairro">
+									</div>
+									<div class="form-group">
+										<label for="av_rua">Avenida/Rua:</label>
+										<input type="text" class="form-control" id="av_rua" name="av_rua">
+									</div>
+									<div class="form-group">
+										<label for="casa_flat_n">Casa/Flat Nº:</label>
+										<input type="text" class="form-control" id="casa_flat_n" name="casa_flat_n">
+									</div>
+									<div class="form-group">
+										<label for="quarteirao">Quarteirão:</label>
+										<input type="text" class="form-control" id="quarteirao" name="quarteirao">
+									</div>
+									<div class="form-group">
+										<label for="bi_passaport_n">Número de BI/Passaporte:</label>
+										<input type="text" class="form-control" id="bi_passaport_n" name="bi_passaport_n">
+									</div>
+									<div class="form-group">
+										<label for="emissor">Emissor:</label>
+										<input type="text" class="form-control" id="emissor" name="emissor">
+									</div>
+									<div class="form-group">
+										<label for="data_emissao">Data de Emissão:</label>
+										<input type="date" class="form-control" id="data_emissao" name="data_emissao">
+									</div>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+								<button type="submit" name="save" class="btn btn-primary">Salvar</button>
+							</div>
+						</div>
+
+
+
+
 					</div>
-					<div class="modal-body">Tem certeza de que deseja fazer logout?</div>
-					<div class="modal-footer">
-						<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
-						<a class="btn btn-danger" href="logout.php">Logout</a>
-					</div>
+
+			</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- Modal de Logout -->
+	<div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header bg-danger">
+					<h5 class="modal-title text-white">Informação do Sistema</h5>
+					<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+				<div class="modal-body">Tem certeza de que deseja fazer logout?</div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+					<a class="btn btn-danger" href="logout.php">Logout</a>
 				</div>
 			</div>
 		</div>
+	</div>
 
-		<!-- JavaScript do Bootstrap -->
-		<script src="js/jquery.js"></script>
-		<script src="js/bootstrap.bundle.js"></script>
+	<!-- JavaScript do Bootstrap -->
+	<script src="js/jquery.js"></script>
+	<script src="js/bootstrap.bundle.js"></script>
 
-		<!-- JavaScript do Plugin Principal -->
-		<script src="js/jquery.easing.js"></script>
+	<!-- JavaScript do Plugin Principal -->
+	<script src="js/jquery.easing.js"></script>
 
-		<!-- Plugins de Nível da Página -->
-		<script src="js/jquery.dataTables.js"></script>
-		<script src="js/dataTables.bootstrap4.js"></script>
+	<!-- Plugins de Nível da Página -->
+	<script src="js/jquery.dataTables.js"></script>
+	<script src="js/dataTables.bootstrap4.js"></script>
 
-		<!-- Scripts Personalizados para Todas as Páginas -->
-		<script src="js/sb-admin-2.js"></script>
+	<!-- Scripts Personalizados para Todas as Páginas -->
+	<script src="js/sb-admin-2.js"></script>
 
-		<script>
-			$(document).ready(function () {
-				$('#dataTable').DataTable({
-					"order": [[2, "asc"]]
-				});
+	<script>
+		$(document).ready(function() {
+			$('#dataTable').DataTable({
+				"order": [
+					[2, "asc"]
+				]
 			});
-		</script>
+		});
+	</script>
 
-	</body>
+</body>
 
 </html>

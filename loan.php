@@ -1,124 +1,133 @@
 <?php
-	date_default_timezone_set("Etc/GMT+8");
-	require_once'session.php';
-	require_once'class.php';
-	$db=new db_class(); 
+date_default_timezone_set("Etc/GMT+8");
+require_once 'session.php';
+require_once 'class.php';
+require_once 'config.php';
+$connection = new db_connect();
+include 'cf.php';
+$db = new db_class();
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
-	<style>
-		input[type=number]::-webkit-inner-spin-button, 
-		input[type=number]::-webkit-outer-spin-button{ 
-			-webkit-appearance: none; 
-		}
 
-	</style>
-	
-	
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Loan Management System</title>
+    <title>Sistema de Gerenciamento de Empréstimos</title>
 
     <link href="fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-  
-   
-    <link href="css/sb-admin-2.css" rel="stylesheet">
-    
-	<!-- Custom styles for this page -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0/dist/css/bootstrap.min.css">
     <link href="css/dataTables.bootstrap4.css" rel="stylesheet">
-    <link href="css/select2.css" rel="stylesheet">
+
+    <link href="css/sb-admin-2.css" rel="stylesheet">
+    <style>
+        /* Estilos adicionais */
+
+
+        .text-pending {
+            color: orange;
+        }
+
+        .text-approved {
+            color: green;
+        }
+
+        .text-completed {
+            color: blue;
+        }
+
+        .text-denied {
+            color: red;
+        }
+    </style>
 
 </head>
 
 <body id="page-top">
 
-    <!-- Page Wrapper -->
+    <!-- Wrapper da Página -->
     <div id="wrapper">
 
-        <!-- Sidebar -->
+        <!-- Barra Lateral (Sidebar) -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-            <!-- Sidebar - Brand -->
+            <!-- Marca da Barra Lateral -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-                <div class="sidebar-brand-text mx-3">ADMIN PANEL</div>
+                <div class="sidebar-brand-text mx-3">PAINEL DE ADMINISTRAÇÃO</div>
             </a>
 
 
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
+            <!-- Item de Navegação - Painel Principal -->
+            <li class="nav-item ">
                 <a class="nav-link" href="home.php">
                     <i class="fas fa-fw fa-home"></i>
-                    <span>Home</span></a>
+                    <span>Início</span></a>
             </li>
-			<li class="nav-item active">
+            <li class="nav-item active">
                 <a class="nav-link" href="loan.php">
                     <i class="fas fa-fw fas fa-comment-dollar"></i>
-                    <span>Loans</span></a>
+                    <span>Empréstimos</span></a>
             </li>
-			<li class="nav-item">
+            <li class="nav-item">
                 <a class="nav-link" href="payment.php">
                     <i class="fas fa-fw fas fa-coins"></i>
-                    <span>Payments</span></a>
+                    <span>Pagamentos</span></a>
             </li>
-			<li class="nav-item">
+            <li class="nav-item">
                 <a class="nav-link" href="borrower.php">
                     <i class="fas fa-fw fas fa-book"></i>
-                    <span>Borrowers</span></a>
+                    <span>Mutuários</span></a>
             </li>
-			<li class="nav-item">
+            <li class="nav-item">
                 <a class="nav-link" href="loan_plan.php">
                     <i class="fas fa-fw fa-piggy-bank"></i>
-                    <span>Loan Plans</span></a>
+                    <span>Planos de Empréstimo</span></a>
             </li>
-			<li class="nav-item">
+            <li class="nav-item">
                 <a class="nav-link" href="loan_type.php">
                     <i class="fas fa-fw fa-money-check"></i>
-                    <span>Loan Types</span></a>
+                    <span>Tipos de Empréstimo</span></a>
             </li>
-			<li class="nav-item">
+            <li class="nav-item">
                 <a class="nav-link" href="user.php">
                     <i class="fas fa-fw fa-user"></i>
-                    <span>Users</span></a>
+                    <span>Usuários</span></a>
             </li>
         </ul>
-        <!-- End of Sidebar -->
+        <!-- Fim da Barra Lateral (Sidebar) -->
 
-        <!-- Content Wrapper -->
+        <!-- Conteúdo Principal -->
         <div id="content-wrapper" class="d-flex flex-column">
 
-            <!-- Main Content -->
+            <!-- Conteúdo Principal -->
             <div id="content">
 
-                <!-- Topbar -->
+                <!-- Barra Superior (Topbar) -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
-                    <!-- Sidebar Toggle (Topbar) -->
+                    <!-- Alternar Barra Lateral (Topbar) -->
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
-	
-                   
-					<!-- Topbar Navbar -->
+
+
+                    <!-- Menu de Navegação Superior (Topbar) -->
                     <ul class="navbar-nav ml-auto">
 
-                        <!-- Nav Item - User Information -->
+                        <!-- Informações do Usuário - Item de Navegação -->
                         <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo $db->user_acc($_SESSION['user_id'])?></span>
-                                <img class="img-profile rounded-circle"
-                                    src="image/admin_profile.svg">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo $db->user_acc($_SESSION['user_id']) ?></span>
+                                <img class="img-profile rounded-circle" src="image/admin_profile.svg">
                             </a>
-                            <!-- Dropdown - User Information -->
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="userDropdown">
+                            <!-- Menu Suspenso - Informações do Usuário -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
                                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Logout
+                                    Sair
                                 </a>
                             </div>
                         </li>
@@ -126,572 +135,341 @@
                     </ul>
 
                 </nav>
-                <!-- End of Topbar -->
+                <!-- Fim da Barra Superior (Topbar) -->
 
-                <!-- Begin Page Content -->
+                <!-- Conteúdo da Página -->
                 <div class="container-fluid">
 
-                    <!-- Page Heading -->
+                    <!-- Título da Página -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Loan List</h1>
+                        <h1 class="h3 mb-0 text-gray-800">Painel de Controle</h1>
                     </div>
-					<button class="mb-2 btn btn-lg btn-success" href="#" data-toggle="modal" data-target="#addModal"><span class="fa fa-plus"></span> Create new Loan Application</button>
-                    <!-- DataTales Example -->
+
+                    <!-- Linha de Conteúdo -->
                     <div class="card shadow mb-4">
+
                         <div class="card-body">
+                            <button class="btn btn-primary p-2 m-1" data-toggle="modal" data-target="#solicitarEmprestimoModal">Solicitar Empréstimo</button>
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <table class="table" id="dataTable" >
                                     <thead>
                                         <tr>
-                                            <th>#</th>
-                                            <th>Borrower</th>
-                                            <th>Loan Detail</th>
-                                            <th>Payment Detail</th>
+                                            <th>ID</th>
+                                            <th>Referência</th>
+                                            <th>Mutuário</th>
+                                            <th>Valor emprestado</th>
+                                            <th>Taxa de juros</th>
+                                            <th>Multa</th>
                                             <th>Status</th>
-                                            <th>Action</th>
+                                            <th>Data de Lançamento</th>
+                                            <th>Data de Aprovação</th>
+                                            <th>Data de Conclusão</th>
+                                            <th>Ação</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-										<?php
-											$tbl_loan=$db->display_loan();
-											$i=1;
-											while($fetch=$tbl_loan->fetch_array()){
-										?>
-										
-                                        <tr>
-											<td><?php echo $i++;?></td>
-											<td>
-												<p><small>Name: <strong><?php echo $fetch['lastname'].", ".$fetch['firstname']." ".substr($fetch['middlename'], 0, 1)."."?></strong></small></p>
-												<p><small>Contact: <strong><?php echo $fetch['contact_no']?></strong></small></p>
-												<p><small>Address: <strong><?php echo $fetch['address']?></strong></small></p>
-											</td>
-											<td>
-												<p><small>Reference no: <strong><?php echo $fetch['ref_no']?></strong></small></p>
-												<p><small>Loan Type: <strong><?php echo $fetch['ltype_name']?></strong></small></p>
-												<p><small>Loan Plan: <strong><?php echo $fetch['lplan_month']." months[".$fetch['lplan_interest']."%, ".$fetch['lplan_penalty']."%]"?></strong> interest, penalty</small></p>
-												<?php
-													$monthly =($fetch['amount'] + ($fetch['amount'] * ($fetch['lplan_interest']/100))) / $fetch['lplan_month'];
-													$penalty=$monthly * ($fetch['lplan_penalty']/100);
-													$totalAmount=$fetch['amount']+$monthly;
-												?>
-												<p><small>Amount: <strong><?php echo "&#8369; ".number_format($fetch['amount'], 2)?></strong></small></p>
-												<p><small>Total Payable Amount: <strong><?php echo "&#8369; ".number_format($totalAmount, 2)?></strong></small></p>
-												<p><small>Monthly Payable Amount: <strong><?php echo "&#8369; ".number_format($monthly, 2)?></strong></small></p>
-												<p><small>Overdue Payable Amount: <strong><?php echo "&#8369; ".number_format($penalty, 2)?></strong></small></p>
-												<?php
-													if (preg_match('/[1-9]/', $fetch['date_released'])){ 
-														echo '<p><small>Date Released: <strong>'.date("M d, Y", strtotime($fetch['date_released'])).'</strong></small></p>';
-													}
-												?>
-												
-											</td>
-											<td>
-												<?php
-													$payment=$db->conn->query("SELECT * FROM `payment` WHERE `loan_id`='$fetch[loan_id]'") or die($this->conn->error);
-													$paid = $payment->num_rows;
-													$offset = $paid > 0 ? " offset $paid ": "";
-													
-													
-													if($fetch['status'] == 2){
-														$next = $db->conn->query("SELECT * FROM `loan_schedule` WHERE `loan_id`='$fetch[loan_id]' ORDER BY date(due_date) ASC limit 1 $offset ")->fetch_assoc()['due_date'];
-														$add = (date('Ymd',strtotime($next)) < date("Ymd") ) ?  $penalty : 0;
-														echo "<p><small>Next Payment Date: <br /><strong>".date('F d, Y',strtotime($next))."</strong></small></p>";
-														echo "<p><small>Montly Amount: <br /><strong>&#8369; ".number_format($monthly, 2)."</strong></small></p>";
-														echo "<p><small>Penalty: <br /><strong>&#8369; ".$add."</strong></small></p>";
-														echo "<p><small>Payable Amount: <br /><strong>&#8369; ".number_format($monthly+$add, 2)."</strong></small></p>";
-													}
-												?>
-											</td>
-											<td>
-												<?php 
-													if($fetch['status']==0){
-														echo '<span class="badge badge-warning">For Approval</span>';
-													}else if($fetch['status']==1){
-														echo '<span class="badge badge-info">Approved</span>';
-													}else if($fetch['status']==2){
-														echo '<span class="badge badge-primary">Released</span>';
-													}else if($fetch['status']==3){
-														echo '<span class="badge badge-success">Completed</span>';
-													}else if($fetch['status']==4){
-														echo '<span class="badge badge-danger">Denied</span>';
-													}
-													
-												?>
-											</td>
-                                            <td>
-												<?php 
-													if($fetch['status']==2){
-												?>
-													<button class="btn btn-sm btn-primary" href="#" data-toggle="modal" data-target="#viewSchedule<?php echo $fetch['loan_id']?>">View Payment Schedule</button>
-												<?php
-													}else if($fetch['status']==3){
-												?>
-													<button class="btn btn-lg btn-success" readonly="readonly">COMPLETED</button>
-												<?php
-													}else{
-												?>
-													<div class="dropdown">
-														<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-															Action
-														</button>
-														<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-															<a class="dropdown-item bg-warning text-white" href="#" data-toggle="modal" data-target="#updateloan<?php echo $fetch['loan_id']?>">Edit</a>
-															<a class="dropdown-item bg-danger text-white" href="#" data-toggle="modal" data-target="#deleteborrower<?php echo $fetch['loan_id']?>">Delete</a>
-														</div>
-													</div>
-												<?php
-													}
-												?>
-											</td>
-                                        </tr>
-										
-										
-										<!-- Update User Modal -->
-										<div class="modal fade" id="updateloan<?php echo $fetch['loan_id']?>" aria-hidden="true">
-											<div class="modal-dialog modal-lg">
-												<form method="POST" action="updateLoan.php">
-													<div class="modal-content">
-														<div class="modal-header bg-warning">
-															<h5 class="modal-title text-white">Edit Loan</h5>
-															<button class="close" type="button" data-dismiss="modal" aria-label="Close">
-																<span aria-hidden="true">×</span>
-															</button>
-														</div>
-														<div class="modal-body">
-															<div class="form-row">
-																<div class="form-group col-xl-6 col-md-6">
-																	<label>Borrower</label>
-																	<br />
-																	<input type="hidden" value="<?php echo $fetch['loan_id']?>" name="loan_id"/>
-																	<select name="borrower" class="borrow" required="required" style="width:100%;">
-																		<?php
-																			$tbl_borrower=$db->display_borrower();
-																			while($row=$tbl_borrower->fetch_array()){
-																		?>
-																			<option value="<?php echo $row['borrower_id']?>" <?php echo ($fetch['borrower_id']==$row['borrower_id'])?'selected':''?>><?php echo $row['lastname'].", ".$row['firstname']." ".substr($row['middlename'], 0, 1)?>.</option>
-																		<?php
-																			}
-																		?>
-																	</select>
-																</div>
-																<div class="form-group col-xl-6 col-md-6">
-																	<label>Loan type</label>
-																	<br />
-																	<select name="ltype" class="loan" required="required" style="width:100%;">
-																		<?php
-																			$tbl_ltype=$db->display_ltype();
-																			while($row=$tbl_ltype->fetch_array()){
-																		?>
-																			<option value="<?php echo $row['ltype_id']?>" <?php echo ($fetch['ltype_id']==$row['ltype_id'])?'selected':''?>><?php echo $row['ltype_name']?></option>
-																		<?php
-																			}
-																		?>
-																	</select>
-																</div>
-															</div>
-															<div class="form-row">
-																<div class="form-group col-xl-6 col-md-6">
-																	<label>Loan Plan</label>
-																	<select name="lplan" class="form-control" required="required" id="ulplan">
-																		<?php
-																			$tbl_lplan=$db->display_lplan();
-																			while($row=$tbl_lplan->fetch_array()){
-																		?>
-																			<option value="<?php echo $row['lplan_id']?>" <?php echo ($fetch['lplan_id']==$row['lplan_id'])?'selected':''?>><?php echo $row['lplan_month']." months[".$row['lplan_interest']."%, ".$row['lplan_penalty']."%]"?></option>
-																		<?php
-																			}
-																		?>
-																	</select>
-																	<label>Months[Interest%, Penalty%]</label>
-																</div>
-																<div class="form-group col-xl-6 col-md-6">
-																	<label>Loan Amount</label>
-																	<input type="number" name="loan_amount" class="form-control" id="uamount" value="<?php echo $fetch['amount']?>" required="required"/>
-																</div>
-															</div>
-															<div class="form-row">
-																<div class="form-group col-xl-6 col-md-6">
-																	<label>Purpose</label>
-																	<textarea name="purpose" class="form-control" style="resize:none; height:200px;" required="required"><?php echo $fetch['purpose']?></textarea>
-																</div>
-																<div class="form-group col-xl-6 col-md-6">
-																	<button type="button" class="btn btn-primary btn-block" id="updateCalculate">Calculate Amount</button>
-																</div>
-															</div>
-															<hr>
-															<div class="row">
-																<div class="col-xl-4 col-md-4">
-																	<center><span>Total Payable Amount</span></center>
-																	<center><span id="utpa"><?php echo "&#8369; ".number_format($totalAmount, 2)?></span></center>
-																</div>
-																<div class="col-xl-4 col-md-4">
-																	<center><span>Monthly Payable Amount</span></center>
-																	<center><span id="umpa"><?php echo "&#8369; ".number_format($monthly, 2)?></span></center>
-																</div>
-																<div class="col-xl-4 col-md-4">
-																	<center><span>Penalty Amount</span></center>
-																	<center><span id="upa"><?php echo "&#8369; ".number_format($penalty, 2)?></span></center>
-																</div>
-															</div>
-															<hr>
-															<div class="form-row">
-																<div class="form-group col-xl-6 col-md-6">
-																	<label>Status</label>
-																	<select class="form-control" name="status">
-																		<?php
-																			if($fetch['status']==4){
-																		?>
-																			<option value="0" <?php echo ($fetch['status']==0)?'selected':''?>>For Approval</option>
-																			<option value="1" <?php echo ($fetch['status']==1)?'selected':''?>>Approved</option>
-																			<option value="4" <?php echo ($fetch['status']==4)?'selected':''?>>Denied</option>
-																		<?php
-																			}else if($fetch['status']==2){
-																		?>
-																			<option value="2" readonly="readonly">Released</option>
-																		<?php
-																			}else{
-																		?>
-																			<option value="0" <?php echo ($fetch['status']==0)?'selected':''?>>For Approval</option>
-																			<option value="1" <?php echo ($fetch['status']==1)?'selected':''?>>Approved</option>
-																			<option value="2" <?php echo ($fetch['status']==2)?'selected':''?>>Released</option>
-																			<option value="4" <?php echo ($fetch['status']==4)?'selected':''?>>Denied</option>
-																		<?php
-																			}
-																		?>
-																	</select>
-																</div>
-															</div>
-														</div>
-														<div class="modal-footer">
-															<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-															<button type="submit" name="update" class="btn btn-warning">Update</a>
-														</div>
-													</div>
-												</form>
-											</div>
-										</div>
-										
-										
-										
-										<!-- Delete Loan Modal -->
-										
-										<div class="modal fade" id="deleteborrower<?php echo $fetch['loan_id']?>" tabindex="-1" aria-hidden="true">
-											<div class="modal-dialog">
-												<div class="modal-content">
-													<div class="modal-header bg-danger">
-														<h5 class="modal-title text-white">System Information</h5>
-														<button class="close" type="button" data-dismiss="modal" aria-label="Close">
-															<span aria-hidden="true">×</span>
-														</button>
-													</div>
-													<div class="modal-body">Are you sure you want to delete this record?</div>
-													<div class="modal-footer">
-														<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-														<a class="btn btn-danger" href="deleteLoan.php?loan_id=<?php echo $fetch['loan_id']?>">Delete</a>
-													</div>
-												</div>
-											</div>
-										</div>
-										
-										<!-- View Payment Schedule -->
-										<div class="modal fade" id="viewSchedule<?php echo $fetch['loan_id']?>" tabindex="-1" aria-hidden="true">
-											<div class="modal-dialog">
-												<div class="modal-content">
-													<div class="modal-header bg-info">
-														<h5 class="modal-title text-white">Payment Schedule</h5>
-														<button class="close" type="button" data-dismiss="modal" aria-label="Close">
-															<span aria-hidden="true">×</span>
-														</button>
-													</div>
-													<div class="modal-body">
-														<div class="row">
-															<div class="col-md-5 col-xl-5">
-																<p>Reference No:</p>
-																<p><strong><?php echo $fetch['ref_no']?></strong></p>
-															</div>
-															<div class="col-md-7 col-xl-7">
-																<p>Name:</p>
-																<p><strong><?php echo $fetch['firstname']." ".substr($fetch['middlename'], 0, 1).". ".$fetch['lastname']?></strong></p>
-															</div>
-														</div>
-														<hr />
-														
-														<div class="container">
-															<div class="row">
-																<div class="col-sm-6"><center>Months</center></div>
-																<div class="col-sm-6"><center>Monthly Payment</center></div>
-															</div>
-															<hr />
-															<?php 
-																$tbl_schedule=$db->conn->query("SELECT * FROM `loan_schedule` WHERE `loan_id`='".$fetch['loan_id']."'");
-																
-																while($row=$tbl_schedule->fetch_array()){
-															?>
-															<div class="row">
-																<div class="col-sm-6 p-2 pl-5" style="border-right: 1px solid black; border-bottom: 1px solid black;"><strong><?php echo date("F d, Y" ,strtotime($row['due_date']));?></strong></div>
-																<div class="col-sm-6 p-2 pl-5" style="border-bottom: 1px solid black;"><strong><?php echo "&#8369; ".number_format($monthly, 2); ?></strong></div>
-															</div>
-																<?php
-																}
-															?>
-														
-														</div>	
-													</div>
-													<div class="modal-footer">
-														<button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-													</div>
-												</div>
-											</div>
-										</div>
-										
-										
-										
-										
-										<?php
-											}
-										?>
+                                        <?php
+                                        // Inclua o arquivo cf.php para obter a conexão com o banco de dados
+
+                                        $obj = new db_class(); // Criar uma instância da classe db_class
+
+                                        // Chame a função display_loan() para obter os dados da tabela "loan"
+                                        $result = $obj->display_loan();
+
+                                        // Verifique se a consulta foi bem-sucedida
+                                        if ($result) {
+                                            while ($row = $result->fetch_assoc()) {
+                                                // Define a classe CSS com base no valor da coluna "status"
+                                                $statusClass = '';
+                                                switch ($row['status']) {
+                                                    case 'pendente':
+                                                        $statusClass = 'text-pending';
+                                                        break;
+                                                    case 'aprovado':
+                                                        $statusClass = 'text-approved';
+                                                        break;
+                                                    case 'concluído':
+                                                        $statusClass = 'text-completed';
+                                                        break;
+                                                    case 'negado':
+                                                        $statusClass = 'text-denied';
+                                                        break;
+                                                    default:
+                                                        $statusClass = '';
+                                                        break;
+                                                }
+
+                                                // Preencha as células da tabela com os dados
+                                                echo '<tr>';
+                                                echo '<td>' . $row['id'] . '</td>';
+                                                echo '<td>' . $row['ref'] . '</td>';
+                                                if(isset($row['borrower_id']))
+                                                {
+                                                    $borrowerId = $row['borrower_id'];
+
+                                                    $query2 = "SELECT firstname, lastname FROM borrower WHERE borrower_id = $borrowerId";
+                                                    $result2 = $conn2->query($query2);
+
+                                                    if($result2 && $result2->num_rows > 0)
+                                                    {
+                                                        $data = $result2->fetch_assoc();
+                                                        echo '<td class="text-completed">' . $data['firstname'] . ' '. $data['lastname'] . '</td>';
+                                                    }
+                                                }
+                                                
+                                                echo '<td>' . number_format($row['amount'], 2) . ' MT</td>';
+                                                echo '<td>' . $row['interest_rate'] . '%</td>';
+                                                echo '<td>' . number_format($row['penalty'], 2) . '%</td>';
+                                                echo '<td class="' . $statusClass . '">' . $row['status'] . '</td>';
+                                                echo '<td>' . $row['release_date'] . '</td>';
+                                                echo '<td>' . $row['approval_date'] . '</td>';
+                                                echo '<td>' . $row['completion_date'] . '</td>';
+                                                echo '<td><a class="btn btn-primary" href="loan_details.php?id=' . $row['id'] . '">Detalhes</a></td>';
+
+
+
+                                                echo '</tr>';
+                                            }
+                                        } else {
+                                            echo "Erro na consulta de dados da tabela loan: " . $conn2->error;
+                                        }
+                                        ?>
+
+
                                     </tbody>
                                 </table>
-                            </div>
-						</div>
-                       
-                    </div>
-				</div>
-            <!-- End of Main Content -->
 
-            <!-- Footer -->
-            <footer class="stocky-footer">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Loan Management System <?php echo date("Y")?></span>
+                                <!-- Botões para navegação de páginas -->
+                                <div class="text-center">
+                                    <nav aria-label="Page navigation">
+                                        <ul class="pagination" id="pagination">
+                                            <!-- Os botões de página serão carregados dinamicamente aqui -->
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+
+                            <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+
+                        </div>
                     </div>
                 </div>
-            </footer>
-            <!-- End of Footer -->
+                <!-- Fim do Conteúdo Principal -->
+
+                <!-- Rodapé -->
+                <footer class="stocky-footer">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span>Direitos Autorais &copy; Sistema de Gerenciamento de Empréstimos <?php echo date("Y") ?></span>
+                        </div>
+                    </div>
+                </footer>
+                <!-- Fim do Rodapé -->
+
+            </div>
+            <!-- Fim do Conteúdo Principal -->
 
         </div>
-        <!-- End of Content Wrapper -->
+        <!-- Fim do Wrapper da Página -->
 
-    </div>
-    <!-- End of Page Wrapper -->
+        <!-- Botão de Rolagem para o Topo -->
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
 
-    <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
-	
-	
-	<!-- Add Loan Modal-->
-	<div class="modal fade" id="addModal" aria-hidden="true">
-		<div class="modal-dialog modal-lg">
-			<form method="POST" action="save_loan.php">
-				<div class="modal-content">
-					<div class="modal-header bg-primary">
-						<h5 class="modal-title text-white">Loan Application</h5>
-						<button class="close" type="button" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">×</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<div class="form-row">
-							<div class="form-group col-xl-6 col-md-6">
-								<label>Borrower</label>
-								<br />
-								<select name="borrower" class="borrow" required="required" style="width:100%;">
-									<option value=""></option>
-									<?php
-										$tbl_borrower=$db->display_borrower();
-										while($fetch=$tbl_borrower->fetch_array()){
-									?>
-										<option value="<?php echo $fetch['borrower_id']?>"><?php echo $fetch['lastname'].", ".$fetch['firstname']." ".substr($fetch['middlename'], 0, 1)?>.</option>
-									<?php
-										}
-									?>
-								</select>
-							</div>
-							<div class="form-group col-xl-6 col-md-6">
-								<label>Loan type</label>
-								<br />
-								<select name="ltype" class="loan" required="required" style="width:100%;">
-										<option value=""></option>
-									<?php
-										$tbl_ltype=$db->display_ltype();
-										while($fetch=$tbl_ltype->fetch_array()){
-									?>
-										<option value="<?php echo $fetch['ltype_id']?>"><?php echo $fetch['ltype_name']?></option>
-									<?php
-										}
-									?>
-								</select>
-							</div>
-						</div>
-						<div class="form-row">
-							<div class="form-group col-xl-6 col-md-6">
-								<label>Loan Plan</label>
-								<select name="lplan" class="form-control" required="required" id="lplan">
-										<option value="">Please select an option</option>
-									<?php
-										$tbl_lplan=$db->display_lplan();
-										while($fetch=$tbl_lplan->fetch_array()){
-									?>
-										<option value="<?php echo $fetch['lplan_id']?>"><?php echo $fetch['lplan_month']." months[".$fetch['lplan_interest']."%, ".$fetch['lplan_penalty']."%]"?></option>
-									<?php
-										}
-									?>
-								</select>
-								<label>Months[Interest%, Penalty%]</label>
-							</div>
-							<div class="form-group col-xl-6 col-md-6">
-								<label>Loan Amount</label>
-								<input type="number" name="loan_amount" class="form-control" id="amount" required="required"/>
-							</div>
-						</div>
-						<div class="form-row">
-							<div class="form-group col-xl-6 col-md-6">
-								<label>Purpose</label>
-								<textarea name="purpose" class="form-control" style="resize:none; height:200px;" required="required"></textarea>
-							</div>
-							<div class="form-group col-xl-6 col-md-6">
-								<button type="button" class="btn btn-primary btn-block" id="calculate">Calculate Amount</button>
-							</div>
-						</div>
-						<hr>
-						<div class="row" id="calcTable">
-							<div class="col-xl-4 col-md-4">
-								<center><span>Total Payable Amount</span></center>
-								<center><span id="tpa"></span></center>
-							</div>
-							<div class="col-xl-4 col-md-4">
-								<center><span>Monthly Payable Amount</span></center>
-								<center><span id="mpa"></span></center>
-							</div>
-							<div class="col-xl-4 col-md-4">
-								<center><span>Penalty Amount</span></center>
-								<center><span id="pa"></span></center>
-							</div>
-						</div>
-					</div>
-					<div class="modal-footer">
-						<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-						<button type="submit" name="apply" class="btn btn-primary">Apply</a>
-					</div>
-				</div>
-			</form>
-		</div>
-	</div>
-	
-	
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h5 class="modal-title text-white">System Information</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Are you sure you want to logout?</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-danger" href="logout.php">Logout</a>
+        <!-- Modal para solicitar empréstimo -->
+        <!-- Modal de Detalhes -->
+        <!-- Modal de Detalhes do Mutuário -->
+        <!-- Botão para acionar o modal e incluir os detalhes do mutuário no atributo data -->
+
+
+        <!-- Modal para exibir os detalhes do mutuário -->
+
+
+        <script>
+            // Manipulador de clique do botão "Detalhes"
+            $('button[data-toggle="modal"]').on('click', function() {
+                var borrowerID = $(this).data('borrower-id');
+                var firstname = $(this).data('firstname');
+                var lastname = $(this).data('lastname');
+                var address = $(this).data('address');
+                var email = $(this).data('email');
+
+                // Preencha os campos do modal com os detalhes do mutuário
+                $('#detalhesBorrowerModal #detalhesFirstname').text(firstname);
+                $('#detalhesBorrowerModal #detalhesLastname').text(lastname);
+                $('#detalhesBorrowerModal #detalhesAddress').text(address);
+                $('#detalhesBorrowerModal #detalhesEmail').text(email);
+
+                // Você pode adicionar o ID do mutuário a um campo oculto se precisar usá-lo posteriormente
+                $('#detalhesBorrowerModal #borrowerId').val(borrowerID);
+            });
+        </script>
+
+
+
+
+
+        <!-- Modal para solicitar empréstimo -->
+        <div class="modal fade" id="solicitarEmprestimoModal" tabindex="-1" role="dialog" aria-labelledby="solicitarEmprestimoModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="solicitarEmprestimoModalLabel">Solicitar Empréstimo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="save_loan.php" method="post">
+                            <?php
+                            // Inclua o arquivo cf.php para obter a conexão
+                            include 'cf.php';
+
+                            // Consulta para buscar dados de borrower
+                            $queryBorrower = "SELECT * FROM borrower";
+                            $resultBorrower = $conn2->query($queryBorrower);
+
+                            // Verifica se a consulta de borrower foi executada com sucesso
+                            if (!$resultBorrower) {
+                                echo "Erro na consulta de mutuários: " . $conn2->error;
+                            } else {
+                                // Verifica se não há borrowers disponíveis
+                                if ($resultBorrower->num_rows == 0) {
+                                    echo '<p>Nenhum mutuário disponível. Crie um mutuário primeiro.</p>';
+                                    echo '<a class="btn btn-primary" href="borrower.php">Criar Mutuário</a>';
+                                } else {
+                                    echo '<div class="form-group">
+            <label for="borrowerSelect">Selecione o Mutuário:</label>
+            <select class="form-control" id="borrowerSelect" name="borrower_id">
+                <option value="">Selecione um mutuário</option>';
+                                    while ($row = $resultBorrower->fetch_assoc()) {
+                                        echo '<option value="' . $row['borrower_id'] . '">' . $row['firstname'] . ' ' . $row['lastname'] . '</option>';
+                                    }
+                                    echo '</select>
+        </div>';
+                                }
+                            }
+
+                            // Consulta para buscar dados de loan_type
+                            $queryLoanType = "SELECT ltype_id, ltype_name FROM loan_type";
+                            $resultLoanType = $conn2->query($queryLoanType);
+
+                            // Verifica se a consulta de loan_type foi executada com sucesso
+                            if (!$resultLoanType) {
+                                echo "Erro na consulta de tipos de empréstimo: " . $conn2->error;
+                            } else {
+                                // Verifica se não há loan_types disponíveis
+                                if ($resultLoanType->num_rows == 0) {
+                                    echo '<p>Nenhum tipo de empréstimo disponível. Crie um tipo de empréstimo primeiro.</p>';
+                                    echo '<a class="btn btn-primary" href="loan_type.php">Criar Tipo de Empréstimo</a>';
+                                } else {
+                                    echo '<div class="form-group">
+            <label for "loanTypeSelect">Selecione o Tipo de Empréstimo:</label>
+            <select class="form-control" id="loanTypeSelect" name="loan_type_id">
+                <option value="">Selecione um tipo de empréstimo</option>';
+                                    while ($row = $resultLoanType->fetch_assoc()) {
+                                        echo '<option value="' . $row['ltype_id'] . '">' . $row['ltype_name'] . '</option>';
+                                    }
+                                    echo '</select>
+        </div>';
+                                }
+                            }
+                            ?>
+
+
+                            <div class="form-group">
+                                <label for="amountInput">Quantia:</label>
+                                <input type="text" class="form-control" placeholder="10000.00 MT" id="amountInput" name="amount">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="interestRateInput">Taxa de Juros:</label>
+                                <input type="text" class="form-control" placeholder="25%" id="interestRateInput" name="interest_rate">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="penaltyInput">Duração (Meses)</label>
+                                <input type="text" class="form-control" placeholder="1 = 1 mês" id="penaltyInput" name="duration_months">
+                            </div>
+                            <div class="form-group">
+                                <label for="penaltyInput">Multa:</label>
+                                <input type="text" class="form-control" placeholder="10% ao dia" id="penaltyInput" name="penalty">
+                            </div>
+
+                            <button type="submit" name="save" class="btn btn-primary" id="enviarSolicitacao">Enviar Solicitação</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Bootstrap core JavaScript-->
-    <script src="js/jquery.js"></script>
-    <script src="js/bootstrap.bundle.js"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="js/jquery.easing.js"></script>
-    <script src="js/select2.js"></script>
 
 
-	<!-- Page level plugins -->
-	<script src="js/jquery.dataTables.js"></script>
-    <script src="js/dataTables.bootstrap4.js"></script>
-	
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.js"></script>
-	
-	<script>
-		
-		$(document).ready(function() {
-			$("#calcTable").hide();
-			
-			
-			$('.borrow').select2({
-				placeholder: 'Selecione uma opção'
+        <?php
+        // Verifique se há uma mensagem de aviso em GET
+        if (isset($_GET['message'])) {
+            $message = $_GET['message'];
+
+            // Verifique se a mensagem não está vazia
+            if (!empty($message)) {
+                echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">';
+                echo $message;
+                echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                echo '</div>';
+            }
+        }
+        ?>
+
+        <!-- Modal de Logout -->
+        <div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger">
+                        <h5 class="modal-title text-white">Informações do Sistema</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">Tem certeza de que deseja sair?</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                        <a class="btn btn-danger" href="logout.php">Sair</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- JavaScript do Bootstrap -->
+        <script src="js/jquery.js"></script>
+        <script src="js/bootstrap.bundle.js"></script>
+
+        <!-- JavaScript do Plugin Core -->
+        <script src="js/jquery.easing.js"></script>
+
+        <!-- Scripts Personalizados para Todas as Páginas -->
+        <script src="js/sb-admin-2.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0/dist/js/bootstrap.min.js"></script>
+        <script src="js/jquery.dataTables.js"></script>
+		<script src="js/dataTables.bootstrap4.js"></script>
+
+		<!-- Scripts Personalizados para Todas as Páginas -->
+		<script src="js/sb-admin-2.js"></script>
+
+		<script>
+			$(document).ready(function () {
+				$('#dataTable').DataTable({
+					"order": [[2, "asc"]]
+				});
 			});
-			
-			$('.loan').select2({
-				placeholder: 'Selecione uma opção'
-			});
-			
-			
-			
-			$("#calculate").click(function(){
-				if($("#lplan").val() == "" || $("#amount").val() == ""){
-					alert("Por favor, insira um Plano de Empréstimo ou Valor para Calcular")
-				}else{
-					var lplan=$("#lplan option:selected").text();
-					var months=parseFloat(lplan.split('months')[0]);
-					var splitter=lplan.split('months')[1];
-					var findinterest=splitter.split('%')[0];
-					var interest=parseFloat(findinterest.replace(/[^0-9.]/g, ""));
-					var findpenalty=splitter.split('%')[1];
-					var penalty=parseFloat(findpenalty.replace(/[^0-9.]/g, ""));
-					
-					var amount=parseFloat($("#amount").val());
-					
-					var monthly =(amount + (amount * (interest/100))) / months;
-					var penalty=monthly * (penalty/100);
-					var totalAmount=amount+monthly;
-					
-					
-					
-					$("#tpa").text("\u20B1 "+totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2}));
-					$("#mpa").text("\u20B1 "+monthly.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2}));
-					$("#pa").text("\u20B1 "+penalty.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2}));
-					
-					$("#calcTable").show();
-				}
-				
-			});
-			
-			
-			$("#updateCalculate").click(function(){
-				if($("#ulplan").val() == "" || $("#uamount").val() == ""){
-					alert("Please enter a Loan Plan or Amount to Calculate")
-				}else{
-					var lplan=$("#ulplan option:selected").text();
-					var months=parseFloat(lplan.split('months')[0]);
-					var splitter=lplan.split('months')[1];
-					var findinterest=splitter.split('%')[0];
-					var interest=parseFloat(findinterest.replace(/[^0-9.]/g, ""));
-					var findpenalty=splitter.split('%')[1];
-					var penalty=parseFloat(findpenalty.replace(/[^0-9.]/g, ""));
-					
-					var amount=parseFloat($("#uamount").val());
-					
-					var monthly =(amount + (amount * (interest/100))) / months;
-					var penalty=monthly * (penalty/100);
-					var totalAmount=amount+monthly;
-					
-					
-					
-					$("#utpa").text("\u20B1 "+totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2}));
-					$("#umpa").text("\u20B1 "+monthly.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2}));
-					$("#upa").text("\u20B1 "+penalty.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2}));
-					
+		</script>
 
-				}
-				
-			});
-			
-			$('#dataTable').DataTable();
-		});
-	</sc
+</body>
+
+</html>

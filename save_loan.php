@@ -1,17 +1,37 @@
 <?php
-	date_default_timezone_set("Etc/GMT+8");
-	require_once'class.php';
-	if(ISSET($_POST['apply'])){
-		$db=new db_class();
-		$borrower=$_POST['borrower'];
-		$ltype=$_POST['ltype'];
-		$lplan=$_POST['lplan'];
-		$loan_amount=$_POST['loan_amount'];
-		$purpose=$_POST['purpose'];
-		$date_created=date("Y-m-d H:i:s");
-		
-		$db->save_loan($borrower,$ltype,$lplan,$loan_amount,$purpose, $date_created);
-		
-		header("location: loan.php");
-	}
-?>
+// Inclua o arquivo de configuração do banco de dados
+require_once 'class.php';
+
+// Verifique se o formulário foi enviado
+if (isset($_POST['save'])) {
+    $db = new db_class();
+
+    // Recolha os dados do formulário
+    $borrower_id = $_POST['borrower_id'];
+
+    if ($db->hasPendingOrApprovedLoan($borrower_id)) {
+        // Em vez de um redirecionamento direto, você pode definir a mensagem em GET
+        $message = "Encontramos um empréstimo pendente ou aprovado. Não é possível criar um novo empréstimo.";
+
+        // Redirecione para a página "loan" com a mensagem em GET
+        header("location: loan.php?message=" . urlencode($message));
+        exit;
+    } else {
+        $loan_type_id = $_POST['loan_type_id'];
+        $amount = $_POST['amount'];
+        $interest_rate = $_POST['interest_rate'];
+        $penalty = $_POST['penalty'];
+        $duration_months = $_POST['duration_months'];
+
+        // Chame a função de inserção do empréstimo
+        $result = $db->insertLoan($borrower_id, $loan_type_id, $amount, $interest_rate, $penalty, $duration_months);
+
+        if ($result) {
+            // Redirecione para uma página de sucesso ou faça o que for necessário após a inserção bem-sucedida
+            header("location: loan.php");
+        } else {
+            // Trate o erro, se houver, por exemplo, exibindo uma mensagem de erro
+            echo "Erro ao inserir o empréstimo.";
+        }
+    }
+}

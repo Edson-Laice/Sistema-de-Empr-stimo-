@@ -48,6 +48,36 @@
 				);	
 			}
 		}
+		public function hasPendingOrApprovedLoan($borrower_id) {
+			  // Consulta SQL para verificar se o mutuário possui um empréstimo pendente ou aprovado
+			  $query = "SELECT COUNT(*) as count FROM loans WHERE borrower_id = $borrower_id AND (status = 'pendente' OR status = 'aprovado')";
+
+			  $result = $this->conn->query($query);
+	  
+			  if ($result) {
+				  $row = $result->fetch_assoc();
+				  $count = $row['count'];
+	  
+				  return $count > 0;
+			  } else {
+				  return false;
+			  }
+		}
+
+		public function getLoanById($loanID) {
+			$query = $this->conn->prepare("SELECT * FROM `loan` WHERE `id` = ?");
+			$query->bind_param("i", $loanID);
+		
+			if ($query->execute()) {
+				$result = $query->get_result();
+				if ($result->num_rows > 0) {
+					return $result->fetch_assoc();
+				}
+			}
+			return null;
+		}
+
+		
 		
 		public function user_acc($user_id){
 			$query=$this->conn->prepare("SELECT * FROM `user` WHERE `user_id`='$user_id'") or die($this->conn->error);
@@ -85,8 +115,41 @@
 				return true;
 			}
 		}
+
+		/**Loan Function */
+		public function insertLoan($borrower_id, $loan_type_id, $amount, $interest_rate, $penalty, $duration_months) {
+			// Gere um número de referência único
+			$ref = mt_rand(1,99999999);
+		
+			// Obtenha a data atual
+			$release_date = date('Y-m-d');
+		
+			// Defina o status como "pendente" por padrão
+			$status = 'pendente';
+		
+			$query = $this->conn->prepare("INSERT INTO `loan` (`ref`, `borrower_id`, `loan_type_id`, `amount`, `interest_rate`, `penalty`, `status`, `release_date`, `duration_months`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			
+			if ($query) {
+				$query->bind_param("siiddsssi", $ref, $borrower_id, $loan_type_id, $amount, $interest_rate, $penalty, $status, $release_date, $duration_months);
+		
+				if ($query->execute()) {
+					$query->close();
+					$this->conn->close();
+					return true;
+				} else {
+					echo "Erro ao executar a consulta: " . $query->error;
+				}
+			} else {
+				echo "Erro de preparação: " . $this->conn->error;
+			}
+		
+			return false;
+		}
 		
 		
+		
+		
+
 		/* Loan Type Function */
 		
 		public function save_ltype($ltype_name,$ltype_desc){
@@ -129,60 +192,31 @@
 		}
 		
 		
-		/* Loan Plan Function */
-		
-		public function save_lplan($lplan_month,$lplan_interest,$lplan_penalty){
-			$query=$this->conn->prepare("INSERT INTO `loan_plan` (`lplan_month`, `lplan_interest`, `lplan_penalty`) VALUES(?, ?, ?)") or die($this->conn->error);
-			$query->bind_param("sss", $lplan_month, $lplan_interest, $lplan_penalty);
-			
-			if($query->execute()){
-				$query->close();
-				$this->conn->close();
-				return true;
-			}
-		}
-		
-		
-		public function display_lplan(){
-			$query=$this->conn->prepare("SELECT * FROM `loan_plan`") or die($this->conn->error);
-			if($query->execute()){
+		/* Loan Type Function */
+		public function display_loan() {
+			$query = $this->conn->prepare("SELECT * FROM `loan`") or die($this->conn->error);
+			if ($query->execute()) {
 				$result = $query->get_result();
 				return $result;
 			}
 		}
 		
-		public function delete_lplan($lplan_id){
-			$query=$this->conn->prepare("DELETE FROM `loan_plan` WHERE `lplan_id` = '$lplan_id'") or die($this->conn->error);
-			if($query->execute()){
-				$query->close();
-				$this->conn->close();
-				return true;
-			}
-		}
 		
-		public function update_lplan($lplan_id,$lplan_month,$lplan_interest,$lplan_penalty){
-			$query=$this->conn->prepare("UPDATE `loan_plan` SET `lplan_month`=?, `lplan_interest`=?, `lplan_penalty`=? WHERE `lplan_id`=?") or die($this->conn->error);
-			$query->bind_param("idii", $lplan_month, $lplan_interest, $lplan_penalty, $lplan_id);
-			
-			if($query->execute()){
-				$query->close();
-				$this->conn->close();
-				return true;
-			}
-		}
 		
 		/* Borrower Function */
 		
-		public function save_borrower($firstname,$middlename,$lastname,$contact_no,$address,$email,$tax_id){
-			$query=$this->conn->prepare("INSERT INTO `borrower` (`firstname`, `middlename`, `lastname`, `contact_no`, `address`, `email`, `tax_id`) VALUES(?, ?, ?, ?, ?, ?, ?)") or die($this->conn->error);
-			$query->bind_param("ssssssi", $firstname, $middlename, $lastname, $contact_no, $address, $email, $tax_id);
+		public function save_borrower($firstname, $middlename, $lastname, $contact_no, $address, $email, $tax_id, $data_nascimento, $nacionalidade, $naturalidade, $provincia, $bi_passaport_n, $emissor, $data_emissao, $estado_civil, $sexo, $profissao, $residencia, $bairro, $av_rua, $casa_flat_n, $quarteirao) {
+			$query = $this->conn->prepare("INSERT INTO `borrower` (`firstname`, `middlename`, `lastname`, `contact_no`, `address`, `email`, `tax_id`, `data_nascimento`, `nacionalidade`, `naturalidade`, `provincia`, `bi_passaport_n`, `emissor`, `data_emissao`, `estado_civil`, `sexo`, `profissao`, `residencia`, `bairro`, `av_rua`, `casa_flat_n`, `quarteirao`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)") or die($this->conn->error);
 			
-			if($query->execute()){
+			$query->bind_param("ssssssisssssssssssssss", $firstname, $middlename, $lastname, $contact_no, $address, $email, $tax_id, $data_nascimento, $nacionalidade, $naturalidade, $provincia, $bi_passaport_n, $emissor, $data_emissao, $estado_civil, $sexo, $profissao, $residencia, $bairro, $av_rua, $casa_flat_n, $quarteirao);
+			
+			if ($query->execute()) {
 				$query->close();
 				$this->conn->close();
 				return true;
 			}
 		}
+		
 		
 		public function display_borrower(){
 			$query=$this->conn->prepare("SELECT * FROM `borrower`") or die($this->conn->error);
@@ -211,111 +245,18 @@
 				return true;
 			}
 		}
-		
-		/* Loan Function */
-		
-		public function save_loan($borrower,$ltype,$lplan,$loan_amount,$purpose, $date_created){
-			$ref_no = mt_rand(1,99999999);
+
+		/* Loan Type*/
+		public function display_loan_type() {
+			$query = "SELECT * FROM `loan_type`";
 			
-			$i=1;
+			$result = $this->conn->query($query);
 			
-			while($i==1){
-				$query=$this->conn->prepare("SELECT * FROM `loan` WHERE `ref_no` ='$ref_no' ") or die($this->conn->error);
-				
-				$check=$query->num_rows;
-				if($check > 0){
-					$ref_no = mt_rand(1,99999999);
-				}else{
-					$i=0;
-				}
-				
-			}
-			
-			$query=$this->conn->prepare("INSERT INTO `loan` (`ref_no`, `ltype_id`, `borrower_id`, `purpose`, `amount`, `lplan_id`, `date_created`) VALUES(?, ?, ?, ?, ?, ?, ?)") or die($this->conn->error);
-			$query->bind_param("siisiis", $ref_no, $ltype, $borrower, $purpose, $loan_amount, $lplan, $date_created);
-			
-			if($query->execute()){
-				$query->close();
-				$this->conn->close();
-				return true;
-			}
-		}
-		
-		public function display_loan(){
-			$query=$this->conn->prepare("SELECT * FROM `loan` INNER JOIN `borrower` ON loan.borrower_id=borrower.borrower_id INNER JOIN `loan_type` ON loan.ltype_id=loan_type.ltype_id INNER JOIN `loan_plan` ON loan.lplan_id=loan_plan.lplan_id") or die($this->conn->error);
-			if($query->execute()){
-				$result = $query->get_result();
+			if ($result) {
 				return $result;
 			}
 		}
 		
-		public function delete_loan($loan_id){
-			$query=$this->conn->prepare("DELETE FROM `loan` WHERE `loan_id` = '$loan_id'") or die($this->conn->error);
-			if($query->execute()){
-				$query->close();
-				$this->conn->close();
-				return true;
-			}
-		}
 		
-		
-		public function update_loan($loan_id, $borrower, $ltype, $lplan, $loan_amount, $purpose, $status, $date_released){
-			$query=$this->conn->prepare("UPDATE `loan` SET `ltype_id`=?, `borrower_id`=?, `purpose`=?, `amount`=?, `lplan_id`=?, `status`=?, `date_released`=? WHERE `loan_id`=?") or die($this->conn->error);
-			$query->bind_param("iisiiisi", $ltype, $borrower, $purpose, $loan_amount, $lplan, $status, $date_released, $loan_id);
-			
-			if($query->execute()){
-				$query->close();
-				$this->conn->close();
-				return true;
-			}
-		}
-		
-		public function check_loan($loan_id){
-			$query=$this->conn->prepare("SELECT * FROM `loan` WHERE `loan_id`='$loan_id'") or die($this->conn->error);
-			if($query->execute()){
-				$result = $query->get_result();
-				return $result;
-			}
-		}
-		
-		public function check_lplan($lplan){
-			$query=$this->conn->prepare("SELECT * FROM `loan_plan` WHERE `lplan_id`='$lplan'") or die($this->conn->error);
-			if($query->execute()){
-				$result = $query->get_result();
-				return $result;
-			}
-		}
-		
-		/* Loan Schedule Function */
-		
-		public function save_date_sched($loan_id, $date_schedule){
-			$query=$this->conn->prepare("INSERT INTO `loan_schedule` (`loan_id`, `due_date`) VALUES(?, ?)") or die($this->conn->error);
-			$query->bind_param("is", $loan_id, $date_schedule);
-			
-			if($query->execute()){
-				return true;
-			}
-		}
-		
-		/* Payment Function */
-		
-		public function display_payment(){
-			$query=$this->conn->prepare("SELECT * FROM `payment`") or die($this->conn->error);
-			if($query->execute()){
-				$result = $query->get_result();
-				return $result;
-			}
-		}
-		
-		public function save_payment($loan_id, $payee, $payment, $penalty, $overdue){
-			$query=$this->conn->prepare("INSERT INTO `payment` (`loan_id`, `payee`, `pay_amount`, `penalty`, `overdue`) VALUES(?, ?, ?, ?, ?)") or die($this->conn->error);
-			$query->bind_param("isssi", $loan_id, $payee, $payment, $penalty, $overdue);
-			
-			if($query->execute()){
-				$query->close();
-				$this->conn->close();
-				return true;
-			}
-		}
 	}
 ?>

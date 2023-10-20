@@ -1,6 +1,6 @@
 <?php
 	require_once'class.php';
-	if(ISSET($_POST['update'])){
+	if(ISSET($_POST[''])){
 		$db=new db_class();
 		$borrower_id=$_POST['borrower_id'];
 		$firstname=$_POST['firstname'];

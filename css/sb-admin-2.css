@@ -66,7 +66,7 @@ body {
   line-height: 1.5;
   color: #858796;
   text-align: left;
-  background-color: #fff;
+  background-color: #ffffff;
 }
 
 [tabindex="-1"]:focus:not(:focus-visible) {
@@ -5736,7 +5736,7 @@ a.close.disabled {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 180%;
   pointer-events: auto;
   background-color: #fff;
   background-clip: padding-box;
@@ -9746,6 +9746,9 @@ a.text-dark:hover, a.text-dark:focus {
   }
   .container {
     min-width: 992px !important;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
   }
   .navbar {
     display: none;
@@ -9900,8 +9903,8 @@ a:focus {
 }
 
 .bg-gradient-primary {
-  background-color: #4e73df;
-  background-image: linear-gradient(180deg, #4e73df 10%, #224abe 100%);
+  background-color: #13855c;
+  background-image: linear-gradient(180deg, #0eb952 10%, #0eb952 100%);
   background-size: cover;
 }
 

@@ -2,7 +2,7 @@
 	define("db_host", "localhost");
 	define("db_user", "root");
 	define("db_pass", "");
-	define("db_name", "db_lms");
+	define("db_name", "db_lms2");
 	
 	
 	class db_connect{

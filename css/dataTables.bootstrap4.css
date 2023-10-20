@@ -1,4 +1,12 @@
+/* Utilize o reset para garantir que os estilos do navegador não interfiram */
 @charset "UTF-8";
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Estilos para a tabela DataTable */
 table.dataTable {
   clear: both;
   margin-top: 6px !important;
@@ -9,7 +17,6 @@ table.dataTable {
 }
 table.dataTable td,
 table.dataTable th {
-  -webkit-box-sizing: content-box;
   box-sizing: content-box;
 }
 table.dataTable td.dataTables_empty,
@@ -21,10 +28,12 @@ table.dataTable.nowrap td {
   white-space: nowrap;
 }
 
-div.dataTables_wrapper div.dataTables_length label {
-  font-weight: normal;
-  text-align: left;
-  white-space: nowrap;
+/* Estilos para a seção de filtro e informações */
+div.dataTables_wrapper div.dataTables_length,
+div.dataTables_wrapper div.dataTables_filter,
+div.dataTables_wrapper div.dataTables_info,
+div.dataTables_wrapper div.dataTables_paginate {
+  text-align: center;
 }
 div.dataTables_wrapper div.dataTables_length select {
   width: auto;
@@ -34,7 +43,6 @@ div.dataTables_wrapper div.dataTables_filter {
   text-align: right;
 }
 div.dataTables_wrapper div.dataTables_filter label {
-  font-weight: normal;
   white-space: nowrap;
   text-align: left;
 }
@@ -50,6 +58,7 @@ div.dataTables_wrapper div.dataTables_paginate {
   margin: 0;
   white-space: nowrap;
   text-align: right;
+  
 }
 div.dataTables_wrapper div.dataTables_paginate ul.pagination {
   margin: 2px 0;
@@ -67,6 +76,7 @@ div.dataTables_wrapper div.dataTables_processing {
   padding: 1em 0;
 }
 
+/* Estilos para as setas de classificação */
 table.dataTable > thead > tr > th:active,
 table.dataTable > thead > tr > td:active {
   outline: none;
@@ -122,10 +132,10 @@ table.dataTable > thead .sorting_desc_disabled:after {
   opacity: 0;
 }
 
+/* Estilos para a seção de rolagem */
 div.dataTables_scrollHead table.dataTable {
   margin-bottom: 0 !important;
 }
-
 div.dataTables_scrollBody table {
   border-top: none;
   margin-top: 0 !important;
@@ -144,6 +154,7 @@ div.dataTables_scrollBody table tbody tr:first-child td {
   border-top: none;
 }
 
+/* Estilos para o rodapé da seção de rolagem */
 div.dataTables_scrollFoot > .dataTables_scrollFootInner {
   box-sizing: content-box;
 }
@@ -152,17 +163,20 @@ div.dataTables_scrollFoot > .dataTables_scrollFootInner > table {
   border-top: none;
 }
 
+/* Estilos responsivos para telas menores */
 @media screen and (max-width: 767px) {
   div.dataTables_wrapper div.dataTables_length,
-div.dataTables_wrapper div.dataTables_filter,
-div.dataTables_wrapper div.dataTables_info,
-div.dataTables_wrapper div.dataTables_paginate {
+  div.dataTables_wrapper div.dataTables_filter,
+  div.dataTables_wrapper div.dataTables_info,
+  div.dataTables_wrapper div.dataTables_paginate {
     text-align: center;
   }
   div.dataTables_wrapper div.dataTables_paginate ul.pagination {
     justify-content: center !important;
   }
 }
+
+/* Estilos para tabelas menores (table-sm) */
 table.dataTable.table-sm > thead > tr > th:not(.sorting_disabled) {
   padding-right: 20px;
 }
@@ -172,12 +186,8 @@ table.dataTable.table-sm .sorting_desc:before {
   top: 5px;
   right: 0.85em;
 }
-table.dataTable.table-sm .sorting:after,
-table.dataTable.table-sm .sorting_asc:after,
-table.dataTable.table-sm .sorting_desc:after {
-  top: 5px;
-}
 
+/* Estilos para tabelas com borda */
 table.table-bordered.dataTable {
   border-right-width: 0;
 }
@@ -185,7 +195,8 @@ table.table-bordered.dataTable th,
 table.table-bordered.dataTable td {
   border-left-width: 0;
 }
-table.table-bordered.dataTable th:last-child, table.table-bordered.dataTable th:last-child,
+table.table-bordered.dataTable th:last-child,
+table.table-bordered.dataTable th:last-child,
 table.table-bordered.dataTable td:last-child,
 table.table-bordered.dataTable td:last-child {
   border-right-width: 1px;
@@ -195,10 +206,12 @@ table.table-bordered.dataTable tbody td {
   border-bottom-width: 0;
 }
 
+/* Estilos para a seção de rolagem do cabeçalho da tabela com borda */
 div.dataTables_scrollHead table.table-bordered {
   border-bottom-width: 0;
 }
 
+/* Estilos para tabelas responsivas */
 div.table-responsive > div.dataTables_wrapper > div.row {
   margin: 0;
 }
