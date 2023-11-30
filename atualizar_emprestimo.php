@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $query = "UPDATE loan SET status = '$status', approval_date = '$approvalDate', completion_date = '$completionDate' WHERE id = $loanID";
     
             if ($conn2->query($query) === TRUE) {
-                echo 'Status do empréstimo atualizado com sucesso.';
+                
             } else {
                 echo 'Erro ao atualizar o status do empréstimo: ' . $conn2->error;
             }
@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $conn2->query($insertQuery);
                 }
             }
-            header("Location: loan.php");
+            header("Location: loan_details.php?id=$loanID");
         } else {
             echo 'Empréstimo não encontrado.';
         }

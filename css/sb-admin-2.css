@@ -5732,11 +5732,12 @@ a.close.disabled {
   content: none;
 }
 
+
 .modal-content {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 180%;
+  width: 100%;
   pointer-events: auto;
   background-color: #fff;
   background-clip: padding-box;

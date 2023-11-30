@@ -5,8 +5,17 @@ require_once 'class.php';
 require_once 'config.php';
 $connection = new db_connect();
 
-$db = new db_class();
 
+$id_borrower = "";
+$db = new db_class();
+$user_id = $_SESSION['user_id'];
+$account_type = "";
+$result = $db->userID();
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        $account_type = $row['account_type'];
+    }
+}
 include 'cf.php';
 if (isset($_GET['id'])) {
     $loanID = $_GET['id'];
@@ -19,6 +28,7 @@ if (isset($_GET['id'])) {
     if ($result && $result->num_rows > 0) {
         $row = $result->fetch_assoc();
     }
+    $borrowerID = $row['borrower_id'];
 }
 
 setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
@@ -36,6 +46,7 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
 
     <link href="fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" integrity="sha512-HXXR0l2yMwHDrDyxJbrMD9eLvPe3z3qL3PPeozNTsiHJEENxx8DH2CxmV05iwG0dwoz5n4gQZQyYLUNt1Wdgfg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="css/dataTables.bootstrap4.css" rel="stylesheet">
 
     <link href="css/sb-admin-2.css" rel="stylesheet">
@@ -91,7 +102,7 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion fixed" id="accordionSidebar">
 
             <!-- Marca da Barra Lateral -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="home.php">
                 <div class="sidebar-brand-text mx-3">PAINEL DE ADMINISTRAÇÃO</div>
             </a>
 
@@ -118,19 +129,30 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                     <span>Mutuários</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="loan_plan.php">
-                    <i class="fas fa-fw fa-piggy-bank"></i>
-                    <span>Planos de Empréstimo</span></a>
+                <a class="nav-link" href="Reports.php">
+                    <i class="ri-git-repository-fill"></i>
+                    <span>Relatórios</span></a>
             </li>
+
             <li class="nav-item">
                 <a class="nav-link" href="loan_type.php">
                     <i class="fas fa-fw fa-money-check"></i>
                     <span>Tipos de Empréstimo</span></a>
             </li>
+            <li class="nav-item ">
+                <a class="nav-link" href="guarantees.php">
+                    <i class="ri-circle-fill"></i>
+                    <span>Tipos de Gatatias</span></a>
+            </li>
             <li class="nav-item">
-                <a class="nav-link" href="user.php">
-                    <i class="fas fa-fw fa-user"></i>
-                    <span>Usuários</span></a>
+                <?php
+                if ($account_type === "gerente") {
+                } else { ?>
+
+                    <a class="nav-link" href="user.php">
+                        <i class="fas fa-fw fa-user"></i>
+                        <span>Usuários</span></a>
+                <?php } ?>
             </li>
         </ul>
         <!-- Fim da Barra Lateral (Sidebar) -->
@@ -199,65 +221,55 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                     }
                     ?>
                     <div class="card shadow mb-4">
-                        <div class="container mt-5 d-flex justify-content-center">
+                        <?php
+                        $sql = "SELECT * FROM borrower WHERE borrower_id = $borrowerID ";
+                        $result = $conn2->query($sql);
 
-                            <div class="card p-3">
+                        if ($result->num_rows > 0) {
+                            while ($row2 = $result->fetch_assoc()) {
 
-                                <div class="d-flex align-items-center">
+                                echo '<div class="container mt-4">';
+                                echo '    <div class="card border-0">';
+                                echo '        <div class="row g-0">';
+                                echo '            <div class="col-md-8">';
+                                echo '                <div class="card-body">';
+                                echo '                    <h5 class="card-title">' . $row2["firstname"] . ' ' . $row2["middlename"] . ' ' . $row2["lastname"] . '</h5>';
+                                echo '                    <p class="card-text">' . $row2["profissao"] . '</p>';
+                                echo '                    <div class="row">';
+                                echo '                        <div class="col">';
+                                echo '                            <div class="card bg-success text-white">';
+                                echo '                                <div class="card-body">';
+                                echo '                                    <h6 class="card-subtitle">BI</h6>';
+                                echo '                                    <p class="card-text">' . $row2["tax_id"] . '</p>';
+                                echo '                                </div>';
+                                echo '                            </div>';
+                                echo '                        </div>';
+                                echo '                        <div class="col">';
+                                echo '                            <div class="card bg-success text-white">';
+                                echo '                                <div class="card-body">';
+                                echo '                                    <h6 class="card-subtitle">Endereço</h6>';
+                                echo '                                    <p class="card-text">' . $row2["address"] . '</p>';
+                                echo '                                </div>';
+                                echo '                            </div>';
+                                echo '                        </div>';
+                                echo '                        <div class="col">';
+                                echo '                            <div class="card bg-success text-white">';
+                                echo '                                <div class="card-body">';
+                                echo '                                    <h6 class="card-subtitle">Telefone</h6>';
+                                echo '                                    <p class="card-text">' . $row2["contact_no"] . '</p>';
+                                echo '                                </div>';
+                                echo '                            </div>';
+                                echo '                        </div>';
+                                echo '                    </div>';
+                                echo '                </div>';
+                                echo '            </div>';
+                                echo '        </div>';
+                                echo '    </div>';
+                                echo '</div>';
+                            }
+                        }
 
-                                    <div class="image">
-                                        <img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80" class="rounded" width="155">
-                                    </div>
-
-                                    <div class="ml-3 w-100">
-
-                                        <h4 class="mb-0 mt-0">Alex HMorrision</h4>
-                                        <span>Senior Journalist</span>
-
-                                        <div class="p-2 mt-2 bg-primary d-flex justify-content-between rounded text-white stats">
-
-                                            <div class="d-flex flex-column">
-
-                                                <span class="articles">Articles</span>
-                                                <span class="number1">38</span>
-
-                                            </div>
-
-                                            <div class="d-flex flex-column">
-
-                                                <span class="followers">Followers</span>
-                                                <span class="number2">980</span>
-
-                                            </div>
-
-
-                                            <div class="d-flex flex-column">
-
-                                                <span class="rating">Rating</span>
-                                                <span class="number3">8.9</span>
-
-                                            </div>
-
-                                        </div>
-
-
-                                        <div class="button mt-2 d-flex flex-row align-items-center">
-
-                                            <button class="btn btn-sm btn-outline-primary w-100">Chat</button>
-                                            <button class="btn btn-sm btn-primary w-100 ml-2">Follow</button>
-
-
-                                        </div>
-
-
-                                    </div>
-
-
-                                </div>
-
-                            </div>
-
-                        </div>
+                        ?>
                     </div>
                     <div class="card shadow mb-4 <?php echo $statusClass ?>">
 
@@ -267,7 +279,7 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                         ?>
                             <div class="row">
                                 <?php
-                                $borrowerID = $row['borrower_id'];
+
                                 $queryBorrower = "SELECT firstname, lastname FROM borrower WHERE borrower_id = $borrowerID";
                                 $resultBorrower = $conn2->query($queryBorrower);
                                 $borrower = $resultBorrower->fetch_assoc();
@@ -303,7 +315,6 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                                 <div class="form-group">
                                     <label for="status">Status:</label>
                                     <select class="form-control" id="status" name="status">
-                                        <option value="pendente" <?php echo ($row['status'] === 'pendente') ? 'selected' : ''; ?>>Pendente</option>
                                         <option value="aprovado" <?php echo ($row['status'] === 'aprovado') ? 'selected' : ''; ?>>Aprovado</option>
                                         <option value="negado" <?php echo ($row['status'] === 'negado') ? 'selected' : ''; ?>>Negado</option>
                                     </select>
@@ -320,7 +331,7 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                             </form>
                         <?php
                             // Fecha a div interna
-                        } elseif ($row['status'] == 'aprovado') {
+                        } elseif ($row['status'] == 'aprovado' || $row['status'] == 'concluído') {
                         ?>
                             <div class="container mt-4 p-4">
                                 <ul class="nav nav-tabs nav-fill mb-3" id="ex1" role="tablist">
@@ -368,9 +379,15 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                                                 <li class="nav-item" role="presentation">
                                                     <a class="nav-link active" id="garantias-tab" data-bs-toggle="tab" href="#garantias-info" role="tab" aria-controls="garantias-info" aria-selected="true">Garantias</a>
                                                 </li>
-                                                <li class="nav-item" role="presentation">
-                                                    <a class="nav-link" id="addgarantiastab" data-bs-toggle="tab" href="#addgarantias" role="tab" aria-controls="addgarantias-tab" aria-selected="false">Adiciovar Nova</a>
-                                                </li>
+                                                <?php
+                                                if ($row['status'] === 'concluído') {
+                                                } else {
+                                                    echo "<li class='nav-item' role='presentation'>
+                                                        <a class='nav-link' id='addgarantiastab' data-bs-toggle='tab' href='#addgarantias' role='tab' aria-controls='addgarantias-tab' aria-selected='false'>Adicionar Nova</a>
+                                                    </li>";
+                                                }
+                                                ?>
+
                                             </ul>
                                         </div>
 
@@ -404,8 +421,8 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                                                             echo '<td>' . $row['descricao'] . '</td>';
                                                             echo '<td>' . $row['valor'] . ' MT' . '</td>';
                                                             echo '<td>' . $row['status'] . '</td>';
-                                                            echo '<td>' . $row['data_aquisicao'] . '</td>';
-                                                            echo '<td>' . $row['data_vencimento'] . '</td>';
+                                                            echo '<td>' . strftime("%d de %B de %Y", strtotime( $row['data_aquisicao'])) . '</td>';
+                                                            echo '<td>' . strftime("%d de %B de %Y", strtotime($row['data_vencimento'] )). '</td>';
                                                             echo '<td>' . $row['avaliador'] . '</td>';
                                                             echo '</tr>';
                                                         }
@@ -418,25 +435,42 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                                                     ?>
                                                 </div>
                                             </div>
+
                                             <div class="tab-pane fade" id="addgarantias" role="tabpanel" aria-labelledby="addgarantiastab">
                                                 <div class="container">
                                                     <form id="guaranteeForm" method="POST" action="adicionar_garantia.php">
                                                         <input type="hidden" name="loan" value="<?php echo $loanID; ?>">
 
                                                         <div class="form-group">
-                                                            <label for="garantiaTipo">Tipo de Garantia:</label>
-                                                            <select class="form-control" id="garantiaTipo" name="garantiaTipo" required>
-                                                                <option value="Veículo">Veículo</option>
-                                                                <option value="Imóvel">Imóvel</option>
-                                                                <option value="Jóia">Jóia</option>
-                                                                <option value="Equipamento Eletrônico">Equipamento Eletrônico</option>
-                                                                <option value="Máquinas Industriais">Máquinas Industriais</option>
-                                                                <option value="Estoque de Mercadorias">Estoque de Mercadorias</option>
-                                                                <option value="Títulos Financeiros">Títulos Financeiros</option>
-                                                                <option value="Terras Agrícolas">Terras Agrícolas</option>
-                                                                <option value="Terras Florestais">Terras Florestais</option>
-                                                                <option value="Outra">Outra</option>
-                                                            </select>
+
+                                                            <?php
+                                                            // Inclua o arquivo cf.php para obter a conexão
+                                                            include 'cf.php';
+
+                                                            // Consulta para buscar dados de borrower
+                                                            $queryGuarantees = "SELECT * FROM guarantees";
+                                                            $resultGuarantees = $conn2->query($queryGuarantees);
+
+                                                            // Verifica se a consulta de borrower foi executada com sucesso
+                                                            if (!$resultGuarantees) {
+                                                                echo "Erro na consulta de mutuários: " . $conn2->error;
+                                                            } else {
+                                                                // Verifica se não há borrowers disponíveis
+                                                                if ($resultGuarantees->num_rows == 0) {
+                                                                    echo '<p class="text-danger">Nenhuma Garantia disponível...</p>';
+                                                                    echo '<a class="btn btn-primary" data-toggle="modal" data-target="#deleteltype">Adicionar Novos Garantias</a>';
+                                                                } else {
+                                                                    echo '<div class="form-group">
+                                                                            <label for="borrowerSelect">Tipo de Garantia:  <a href="#"  data-toggle="modal" data-target="#deleteltype">Adicionar Garantias</a></label>
+                                                                            <select class="form-control borrow" id="guaranteesSelect" name="garantiaTipo" style="width:100%;">
+                                                                                <option selected="selected">Selecione Tipo de Garantia</option>';
+                                                                    while ($row = $resultGuarantees->fetch_assoc()) {
+                                                                        echo '<option value="' . $row['id'] . '">' . $row['name'] . ' </option>';
+                                                                    }
+                                                                    echo '</select>
+                                                                     </div>';
+                                                                }
+                                                            } ?>
 
                                                         </div>
 
@@ -513,9 +547,14 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                                                     if ($result->num_rows > 0) {
                                                         while ($row = $result->fetch_assoc()) {
                                                             echo "<tr>";
-
                                                             echo "<td>" . $row['borrower_ref'] . "</td>";
-                                                            echo "<td>" . $row['loan_type_id'] . "</td>";
+                                                            $sd = "SELECT ltype_name FROM loan_type WHERE ltype_id = " . $row['loan_type_id'];
+                                                            $rs = $conn2->query($sd);
+                                                            if ($rs->num_rows > 0) {
+                                                                while ($r = $rs->fetch_assoc()) {
+                                                                    echo "<td>" . $r['ltype_name'] . "</td>";
+                                                                }
+                                                            }
                                                             echo "<td>" . $row['valor_total'] . ' MT' . "</td>";
                                                             echo "<td>" . $row['status'] . "</td>";
                                                             echo "<td>" . $row['valor_parcela'] . ' MT' . "</td>";
@@ -545,14 +584,22 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                                                                             <form id="paymentForm" method="POST" action="pagamentos.php">
 
                                                                                 <div class="form-group">
-                                                                                    <label for="paymentAmount">Valor do Pagamento: <?php echo $row['valor_parcela'] . ' MT'; ?></label>
+                                                                                    <label for="paymentAmount">Valor do Pagamento: <?php
+
+                                                                                                                                    $valor_parcela = $row['valor_parcela'];
+                                                                                                                                    $valor_multa = $row['multa'];
+                                                                                                                                    $valorTotal = $valor_parcela + $valor_multa;
+
+
+                                                                                                                                    echo $valorTotal . ' MT'; ?></label>
                                                                                     <br>
-                                                                                    <div class="container">
-                                                                                        <button class="btn btn-dark" disabled><?php echo strftime("%d de %B de %Y", strtotime($row['data_vencimento'])); ?></button>
-                                                                                    </div>
+
                                                                                     <input type="hidden" class="form-control" id="parcelId" name="parcelId" value="<?php echo $row['id']; ?>">
                                                                                     </br>
-                                                                                    <input type="hidden" class="form-control" id="paymentAmount" name="paymentAmount" value="<?php echo $row['valor_parcela']; ?>">
+                                                                                    <input type="hidden" class="form-control" id="paymentAmount" name="paymentAmount" value="<?php echo $valorTotal; ?>">
+                                                                                    <input type="hidden" id="user_id" name="user_id" value="<?php echo $user_id; ?>">
+                                                                                    <input type="hidden" id="borrowerid" name="borrowerid" value="<?php echo $borrowerID; ?>">
+
                                                                                 </div>
                                                                                 <div class="model-footer">
                                                                                     <button type="submit" class="btn btn-primary" id="submitPayment">Enviar Pagamento</button>
@@ -594,12 +641,29 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                                 // ...
 
 
-                                echo '<p>Seu empréstimo foi recusado.</p>';
 
+                                echo '                            <div class="card bg-danger  text-white style="max-width: 200px">';
+                                echo '                                <div class="card-body">';
+                                echo '                                    <h6 class="card-subtitle"> O empréstimo foi recusado</h6>';
+
+                                echo '                                </div>';
+                                echo '                            </div>';
                                 echo '<p>Detalhes do empréstimo:</p>';
 
-                                // Restante do código para exibir os detalhes do empréstimo
-                                // ...
+
+
+                                echo '<ul>';
+                                echo '<li>ID do Empréstimo: ' . $row['ref'] . '</li>';
+                                echo '<li>Valor: ' . $row['amount'] . ' MT</li>';
+                                echo '<li>Taxa de Juros: ' . $row['interest_rate'] . '%</li>';
+                                echo '<li>Data de Aprovação: ' . strftime("%d de %B de %Y", strtotime($row['approval_date'])) . '</li>';
+                                echo '<li>Data de Conclusão: ' . strftime("%d de %B de %Y", strtotime($row['completion_date'])) . '</li>';
+                                echo '<li>Status: ' . $row['status'] . '</li>';
+                                // Adicione mais detalhes conforme necessário
+                                echo '</ul>';
+
+
+
 
 
                                 ?>
@@ -636,6 +700,38 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
         </a>
 
         <!-- Modal para solicitar empréstimo -->
+        <div class="modal fade" id="deleteltype" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-lath">
+                        <h5 class="modal-title text-dark">Adicinar Nova Garantia</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="save_guarantees.php">
+                            <div class="form-group">
+                                <label>Nome da Garantia</label>
+                                <input type="text" class="form-control" name="gua_name" required="required" />
+                            </div>
+                            <div class="form-group">
+                                <label>Descrição da Garantia</label>
+                                <textarea style="resize:none;" class="form-control" name="gua_desc" required="required"></textarea>
+                            </div>
+                            <input type="hidden" name="loan_detalis" value="true">
+                            <input type="hidden" name="loanID" value="<?php echo $loanID; ?>">
+                            <button type="submit" class="btn btn-primary btn-block" name="save">Salvar</button>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                        <!--<a class="btn btn-danger" href="delete_ltype.php?ltype_id=<?php echo $fetch['id'] ?>">Excluir</a> -->
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Modal de Detalhes -->
         <!-- Modal de Detalhes do Mutuário -->
         <!-- Botão para acionar o modal e incluir os detalhes do mutuário no atributo data -->

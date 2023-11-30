@@ -6,8 +6,8 @@
 		$password=$_POST['password'];
 		$firstname=$_POST['firstname'];
 		$lastname=$_POST['lastname'];
-		$db->add_user($username,$password,$firstname,$lastname);
-		echo"<script>alert('User added successfully')</script>";
+		$account_type = $_POST['account_type'];
+		$db->add_user($username,$password,$firstname,$lastname,$account_type);
 		echo"<script>window.location='user.php'</script>";
 	}
 ?>

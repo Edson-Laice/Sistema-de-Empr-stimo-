@@ -2,7 +2,19 @@
 date_default_timezone_set("Etc/GMT+8");
 require_once 'session.php';
 require_once 'class.php';
+
+
 $db = new db_class();
+
+$user_id = $_SESSION['user_id'];
+$account_type = "";
+$result = $db->userID();
+if ($result) {
+	while ($row = $result->fetch_assoc()) {
+		$account_type = $row['account_type'];
+	}
+}
+setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
 ?>
 <!DOCTYPE html>
 <html lang="pt">
@@ -23,7 +35,7 @@ $db = new db_class();
 
 	<link href="fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
 
-
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" integrity="sha512-HXXR0l2yMwHDrDyxJbrMD9eLvPe3z3qL3PPeozNTsiHJEENxx8DH2CxmV05iwG0dwoz5n4gQZQyYLUNt1Wdgfg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<link href="css/sb-admin-2.css" rel="stylesheet">
 
 	<!-- Estilos personalizados para esta página -->
@@ -39,7 +51,7 @@ $db = new db_class();
 		<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
 			<!-- Barra Lateral - Marca -->
-			<a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+			<a class="sidebar-brand d-flex align-items-center justify-content-center" href="home.php">
 				<div class="sidebar-brand-text mx-3">PAINEL ADMINISTRATIVO</div>
 			</a>
 
@@ -65,19 +77,30 @@ $db = new db_class();
 					<span>Mutuárois</span></a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link" href="loan_plan.php">
-					<i class="fas fa-fw fa-piggy-bank"></i>
-					<span>Planos de Empréstimo</span></a>
+				<a class="nav-link" href="Reports.php">
+					<i class="ri-git-repository-fill"></i>
+					<span>Relatórios</span></a>
 			</li>
+
 			<li class="nav-item">
 				<a class="nav-link" href="loan_type.php">
 					<i class="fas fa-fw fa-money-check"></i>
 					<span>Tipos de Empréstimo</span></a>
 			</li>
+			<li class="nav-item ">
+                <a class="nav-link" href="guarantees.php">
+                    <i class="ri-circle-fill"></i>
+                    <span>Tipos de Gatatias</span></a>
+            </li>
 			<li class="nav-item">
-				<a class="nav-link" href="user.php">
-					<i class="fas fa-fw fa-user"></i>
-					<span>Usuários</span></a>
+				<?php
+				if ($account_type === "gerente") {
+				} else { ?>
+
+					<a class="nav-link" href="user.php">
+						<i class="fas fa-fw fa-user"></i>
+						<span>Usuários</span></a>
+				<?php } ?>
 			</li>
 		</ul>
 		<!-- Fim da Barra Lateral -->
@@ -124,10 +147,10 @@ $db = new db_class();
 
 					<!-- Título da Página -->
 					<div class="d-sm-flex align-items-center justify-content-between mb-4">
-						<h1 class="h3 mb-0 text-gray-800">Lista de Tomadores</h1>
+						<h1 class="h3 mb-0 text-gray-800">Lista de Mutuárois</h1>
 					</div>
 					<div class="row">
-						<button class="ml-3 mb-3 btn btn-lg btn-primary" href="#" data-toggle="modal" data-target="#addModal"><span class="fa fa-plus"></span> Novo Tomador</button>
+						<button class="ml-3 mb-3 btn btn-lg btn-primary" href="#" data-toggle="modal" data-target="#addModal"><span class="fa fa-plus"></span> Novo Mutuário</button>
 					</div>
 					<!-- Exemplo da Tabela de Dados -->
 					<div class="card shadow mb-4">
@@ -173,15 +196,15 @@ $db = new db_class();
 												<td><?php echo $fetch['lastname'] ?></td>
 												<td><?php echo $fetch['contact_no'] ?></td>
 												<td><?php echo $fetch['address'] ?></td>
-												<td><?php echo $fetch['email'] ?></td>
+												<td><a class="bt-primary " href="#" data-toggle="modal" data-target="#sendMail<?php echo $fetch['borrower_id']; ?>"><?php echo $fetch['email']; ?></a></td>
 												<td><?php echo $fetch['tax_id'] ?></td>
-												<td><?php echo $fetch['data_nascimento'] ?></td>
+												<td><?php echo strftime("%d de %B de %Y", strtotime($fetch['data_nascimento'])); ?></td>
 												<td><?php echo $fetch['nacionalidade'] ?></td>
 												<td><?php echo $fetch['naturalidade'] ?></td>
 												<td><?php echo $fetch['provincia'] ?></td>
 												<td><?php echo $fetch['bi_passaport_n'] ?></td>
 												<td><?php echo $fetch['emissor'] ?></td>
-												<td><?php echo $fetch['data_emissao'] ?></td>
+												<td><?php echo strftime("%d de %B de %Y", strtotime($fetch['data_emissao'])); ?></td>
 												<td><?php echo $fetch['estado_civil'] ?></td>
 												<td><?php echo $fetch['sexo'] ?></td>
 												<td><?php echo $fetch['profissao'] ?></td>
@@ -202,7 +225,36 @@ $db = new db_class();
 													</div>
 												</td>
 											</tr>
+											<!-- Envio de E-mail -->
+											<div class="modal fade" id="sendMail<?php echo $fetch['borrower_id'] ?>" tabindex="-1" aria-hidden="true">
+												<div class="modal-dialog">
+													<div class="modal-content">
+														<div class="modal-header bg-success">
+															<h5 class="modal-title text-white">Envio de Email</h5>
+															<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+																<span class="text-white" aria-hidden="true">×</span>
+															</button>
+														</div>
+														<div class="modal-body">
+															<form action="sendMailer.php" method="post">
+																<label for="destinatario">Destinatário:</label>
+																<input class="form-control text-green" required="required"type="email" value="<?php echo $fetch['email'] ?>" placeholder="<?php echo $fetch['email'] ?>" id="destinatario" name="destinatario" required><br>
 
+																<label for="assunto">Assunto:</label>
+																<input class="form-control" required="required"type="text" id="assunto" name="assunto" required><br>
+
+																<label for="mensagem">Mensagem:</label>
+																<textarea class="form-control" required="required" id="mensagem" name="mensagem" required></textarea><br>
+
+																<button class="btn btn-success" type="submit">Enviar E-mail</button>
+															</form>
+														</div>
+														<div class="modal-footer">
+															<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+														</div>
+													</div>
+												</div>
+											</div>
 											<!-- Modal de Atualização de Tomador -->
 											<div class="modal fade" id="updateborrower<?php echo $fetch['borrower_id'] ?>" tabindex="-1" aria-hidden="true">
 												<div class="modal-dialog">
