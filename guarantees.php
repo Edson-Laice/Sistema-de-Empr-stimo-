@@ -60,7 +60,9 @@ if ($result) {
     <div id="wrapper">
 
         <!-- Barra Lateral (Sidebar) -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" style=" background-color: #3d3747;
+  background-image: linear-gradient(180deg, #3d3747 10%, #3d3747 100%);
+  background-size: cover;" id="accordionSidebar">
 
             <!-- Marca da Barra Lateral -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="home.php">

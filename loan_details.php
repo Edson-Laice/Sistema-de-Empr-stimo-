@@ -10,6 +10,13 @@ $id_borrower = "";
 $db = new db_class();
 $user_id = $_SESSION['user_id'];
 $account_type = "";
+$totalPay = "";
+
+// Dados do Muntuario
+$firstname = "";
+$middlename = "";
+$lastname = "";
+
 $result = $db->userID();
 if ($result) {
     while ($row = $result->fetch_assoc()) {
@@ -45,6 +52,7 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
     <title>Sistema de Gerenciamento de Empréstimos</title>
 
     <link href="fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" integrity="sha512-HXXR0l2yMwHDrDyxJbrMD9eLvPe3z3qL3PPeozNTsiHJEENxx8DH2CxmV05iwG0dwoz5n4gQZQyYLUNt1Wdgfg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="css/dataTables.bootstrap4.css" rel="stylesheet">
@@ -52,7 +60,6 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
     <link href="css/sb-admin-2.css" rel="stylesheet">
     <style>
         /* Estilos adicionais */
-
 
         .text-pending {
             color: orange;
@@ -99,7 +106,9 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
     <div id="wrapper">
 
         <!-- Barra Lateral (Sidebar) -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion fixed" id="accordionSidebar">
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion fixed" style=" background-color: #3d3747;
+  background-image: linear-gradient(180deg, #3d3747 10%, #3d3747 100%);
+  background-size: cover;" id="accordionSidebar">
 
             <!-- Marca da Barra Lateral -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="home.php">
@@ -221,12 +230,19 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                     }
                     ?>
                     <div class="card shadow mb-4">
+                    
+
+                        
                         <?php
                         $sql = "SELECT * FROM borrower WHERE borrower_id = $borrowerID ";
                         $result = $conn2->query($sql);
 
                         if ($result->num_rows > 0) {
                             while ($row2 = $result->fetch_assoc()) {
+
+                                $middlename = $row2['middlename'];
+                                $lastname = $row2['lastname'];
+                                $firstname = $row2['firstname'];
 
                                 echo '<div class="container mt-4">';
                                 echo '    <div class="card border-0">';
@@ -257,6 +273,20 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                                 echo '                                <div class="card-body">';
                                 echo '                                    <h6 class="card-subtitle">Telefone</h6>';
                                 echo '                                    <p class="card-text">' . $row2["contact_no"] . '</p>';
+                                echo '                                </div>';
+                                echo '                            </div>';
+                                echo '                        </div>';
+                                echo '                        <div class="col">';
+                                echo '                            <div class="card bg-success text-white">';
+                                echo '                                <div class="card-body">';
+                                if($row['status'] == 'negado')
+                                {
+                            
+                                }else{
+                                    echo '<a href="print.php?borrower='. $row2["firstname"] .' ' . $row2["middlename"] . ' ' . $row2["lastname"] .'&Bi= '.$row2["bi_passaport_n"].'&natural='.$row2['naturalidade'].','.$row2['provincia'].'&bairro='.$row2['bairro'].'&quarteirao='.$row2['quarteirao'].'&contacto='.$row2['contact_no'].'&profissao='.$row2['profissao'].'&casa_n='.$row2['casa_flat_n'].'&valor='.$row['amount'].'&taxadejuros='.$row['interest_rate'].'&multa='.$row['penalty'].'&data='.$row['approval_date'].'&loanID='.$loanID.' " target="_blank" class="btn btn-warning">Imprimir Contracto</a>';
+                                }
+                                
+
                                 echo '                                </div>';
                                 echo '                            </div>';
                                 echo '                        </div>';
@@ -345,7 +375,7 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                                         <a class="nav-link" id="payment-history-tab" data-bs-toggle="tab" href="#payment-history" role="tab" aria-controls="payment-history" aria-selected="false">Cronologia de Pagamentos</a>
                                     </li>
                                     <li class="nav-item" role="presentation">
-                                        <a class="nav-link" id="payment-history-tab" data-bs-toggle="tab" href="#payment-history" role="tab" aria-controls="payment-history" aria-selected="false">Testemunhas</a>
+                                        <a class="nav-link" id="contract-tab" data-bs-toggle="tab" href="#contract" role="tab" aria-controls="contract" aria-selected="false">Contracto</a>
                                     </li>
                                 </ul>
 
@@ -421,8 +451,8 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                                                             echo '<td>' . $row['descricao'] . '</td>';
                                                             echo '<td>' . $row['valor'] . ' MT' . '</td>';
                                                             echo '<td>' . $row['status'] . '</td>';
-                                                            echo '<td>' . strftime("%d de %B de %Y", strtotime( $row['data_aquisicao'])) . '</td>';
-                                                            echo '<td>' . strftime("%d de %B de %Y", strtotime($row['data_vencimento'] )). '</td>';
+                                                            echo '<td>' . strftime("%d de %B de %Y", strtotime($row['data_aquisicao'])) . '</td>';
+                                                            echo '<td>' . strftime("%d de %B de %Y", strtotime($row['data_vencimento'])) . '</td>';
                                                             echo '<td>' . $row['avaliador'] . '</td>';
                                                             echo '</tr>';
                                                         }
@@ -540,6 +570,7 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                                                 </thead>
                                                 <tbody>
                                                     <?php
+                                                   
                                                     // Realize a consulta SQL para obter os dados da tabela 'parcelas' com base no '$loanID'
                                                     $query = "SELECT * FROM parcelas WHERE loan_id = $loanID ORDER BY data_vencimento ASC";
                                                     $result = $conn2->query($query);
@@ -556,6 +587,7 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                                                                 }
                                                             }
                                                             echo "<td>" . $row['valor_total'] . ' MT' . "</td>";
+                                                            $totalPay = $row['valor_total'] ;
                                                             echo "<td>" . $row['status'] . "</td>";
                                                             echo "<td>" . $row['valor_parcela'] . ' MT' . "</td>";
 
@@ -580,18 +612,20 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                                                                                 <span aria-hidden="true">&times;</span>
                                                                             </button>
                                                                         </div>
-                                                                        <div class="modal-body">
-                                                                            <form id="paymentForm" method="POST" action="pagamentos.php">
+                                                                        <form id="paymentForm" method="POST" action="pagamentos.php">
+                                                                            <div class="modal-body">
+
 
                                                                                 <div class="form-group">
+                                                                                    <label for="s"> Mutuário: <input class="form-control" disabled value="<?php echo $firstname . ' ' . $lastname ?>" type="text"></label>
+
                                                                                     <label for="paymentAmount">Valor do Pagamento: <?php
 
                                                                                                                                     $valor_parcela = $row['valor_parcela'];
                                                                                                                                     $valor_multa = $row['multa'];
-                                                                                                                                    $valorTotal = $valor_parcela + $valor_multa;
-
-
-                                                                                                                                    echo $valorTotal . ' MT'; ?></label>
+                                                                                                                                    $valorTotal = $valor_parcela + $valor_multa; ?>
+                                                                                        <input type="text" disabled class="form-control" value="<?php echo $valorTotal . ' MT'; ?>">
+                                                                                    </label>
                                                                                     <br>
 
                                                                                     <input type="hidden" class="form-control" id="parcelId" name="parcelId" value="<?php echo $row['id']; ?>">
@@ -601,15 +635,14 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                                                                                     <input type="hidden" id="borrowerid" name="borrowerid" value="<?php echo $borrowerID; ?>">
 
                                                                                 </div>
-                                                                                <div class="model-footer">
-                                                                                    <button type="submit" class="btn btn-primary" id="submitPayment">Enviar Pagamento</button>
-                                                                                </div>
-                                                                            </form>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
 
-                                                                        </div>
+
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="submit" class="btn btn-success" id="submitPayment">Enviar Pagamento</button>
+                                                                                <button type="button" class="btn btn-warning" data-dismiss="modal">Cancelar</button>
+                                                                            </div>
+                                                                        </form>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -624,6 +657,10 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                                             </table>
                                         </div>
 
+                                    </div>
+
+                                    <!-- Aba de Contracto-->
+                                    <div class="tab-pane fade" id="payment-history" role="tabpanel" aria-labelledby="contract-tab">
                                     </div>
                                 </div>
                             </div>
@@ -678,6 +715,87 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                 </div>
                 <!-- Fim do Conteúdo Principal -->
 
+                <?php
+                if (isset($_GET['message'])) {
+                    $alert = $_GET['message'];
+
+                    if ($alert == 'aproved') {
+                ?>
+                        <div class="container mt-4">
+                            <!-- Modal -->
+                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-success">
+                                            <h5 class="modal-title text-white" id="exampleModalLabel">Mensagem Importante </h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span class="text-white" id="countdown" aria-hidden="true"></span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Pagamento Enfectuado com Sucesso!!!
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                <?php
+                    }
+                }
+                ?>
+
+                <?php
+                if (isset($_GET['message'])) {
+                    $alert = $_GET['message'];
+
+                    if ($alert == 'garantiasaproved') {
+                ?>
+                        <div class="container mt-4">
+                            <!-- Modal -->
+                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-success">
+                                            <h5 class="modal-title text-white" id="exampleModalLabel">Mensagem Importante </h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span class="text-white" id="countdown" aria-hidden="true"></span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Garantias Salva com Sucesso!!!
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                <?php
+                    }
+                }
+                ?>
+
+                <script>
+                    $(document).ready(function() {
+                        // Exiba o modal
+                        $('#myModal').modal('show');
+
+                        // Defina o tempo inicial do contador
+                        var seconds = 5;
+
+                        // Atualize o contador a cada segundo
+                        var countdown = setInterval(function() {
+                            $('#countdown').text(seconds);
+                            seconds--;
+
+                            // Se o contador chegar a 0, feche o modal
+                            if (seconds < 0) {
+                                clearInterval(countdown);
+                                $('#myModal').modal('hide');
+                            }
+                        }, 1000);
+                    });
+                </script>'
                 <!-- Rodapé -->
                 <footer class="stocky-footer">
                     <div class="container my-auto">
@@ -698,7 +816,9 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
         <a class="scroll-to-top rounded" href="#page-top">
             <i class="fas fa-angle-up"></i>
         </a>
+        <!-- Modal Contracto -->
 
+        
         <!-- Modal para solicitar empréstimo -->
         <div class="modal fade" id="deleteltype" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
@@ -782,6 +902,7 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0/dist/js/bootstrap.min.js"></script>
         <script src="js/jquery.dataTables.js"></script>
         <script src="js/dataTables.bootstrap4.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 
         <!-- Scripts Personalizados para Todas as Páginas -->
         <script src="js/sb-admin-2.js"></script>

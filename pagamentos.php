@@ -26,7 +26,7 @@ if (isset($_POST['paymentAmount'])) {
     if ($conn2->query($query) === TRUE) {
         $updateQuery = "UPDATE parcelas SET status_pagamento = 'Pago', user_id = $user_id WHERE id = $parcelId";
         if ($conn2->query($updateQuery) === TRUE) {
-            header("Location: loan_details.php?id=$loanId");
+            header("Location: loan_details.php?id=$loanId&message=aproved");
         } else {
             echo "Erro ao atualizar o status da parcela: " . $conn2->error;
         }

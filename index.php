@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -14,14 +15,18 @@
     <link href="css/custom.css" rel="stylesheet">
 </head>
 
-<body style="background-color: #13855c;">
-    <section class="vh-300" style="background-color: #13855c;">
+<body style="background-color: #618B7C;">
+    <section class="vh-300" style="background-color: #618B7C;">
         <div class="container py-5 h-150">
+            
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-12 col-md-8 col-lg-6 col-xl-5">
                     <div class="card shadow-2-strong" style="border-radius: 1rem;">
                         <div class="card-body p-5 text-center">
-
+                          
+                            <img style="width: 100px;" src="image/Imagem1.png" alt="" srcset="">
+                            <br>
+                        
                             <h3 class="mb-5">Bem Vindo!!!</h3>
                             <form action="login.php" method="post">
                                 <div class="form-outline mb-4">
@@ -58,7 +63,7 @@
 
         <div class="container my-auto">
             <div class="copyright text-center my-auto">
-                <h6 class="text-white bord"> Sistema de Gerenciamento de Empréstimos V1.0.0</h6>
+                <h6 class="text-white bord"> Loan System V1.0.1</h6>
             </div>
         </div>
     </footer>

@@ -48,7 +48,9 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
 	<div id="wrapper">
 
 		<!-- Barra Lateral -->
-		<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+		<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" style=" background-color: #3d3747;
+  background-image: linear-gradient(180deg, #3d3747 10%, #3d3747 100%);
+  background-size: cover;" id="accordionSidebar">
 
 			<!-- Barra Lateral - Marca -->
 			<a class="sidebar-brand d-flex align-items-center justify-content-center" href="home.php">
@@ -88,10 +90,10 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
 					<span>Tipos de Empréstimo</span></a>
 			</li>
 			<li class="nav-item ">
-                <a class="nav-link" href="guarantees.php">
-                    <i class="ri-circle-fill"></i>
-                    <span>Tipos de Gatatias</span></a>
-            </li>
+				<a class="nav-link" href="guarantees.php">
+					<i class="ri-circle-fill"></i>
+					<span>Tipos de Gatatias</span></a>
+			</li>
 			<li class="nav-item">
 				<?php
 				if ($account_type === "gerente") {
@@ -238,10 +240,10 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
 														<div class="modal-body">
 															<form action="sendMailer.php" method="post">
 																<label for="destinatario">Destinatário:</label>
-																<input class="form-control text-green" required="required"type="email" value="<?php echo $fetch['email'] ?>" placeholder="<?php echo $fetch['email'] ?>" id="destinatario" name="destinatario" required><br>
+																<input class="form-control text-green" required="required" type="email" value="<?php echo $fetch['email'] ?>" placeholder="<?php echo $fetch['email'] ?>" id="destinatario" name="destinatario" required><br>
 
 																<label for="assunto">Assunto:</label>
-																<input class="form-control" required="required"type="text" id="assunto" name="assunto" required><br>
+																<input class="form-control" required="required" type="text" id="assunto" name="assunto" required><br>
 
 																<label for="mensagem">Mensagem:</label>
 																<textarea class="form-control" required="required" id="mensagem" name="mensagem" required></textarea><br>
@@ -267,35 +269,112 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
 																</button>
 															</div>
 															<div class="modal-body">
-																<div class="form-group">
-																	<label>Nome</label>
-																	<input type="text" name="firstname" value="<?php echo $fetch['firstname'] ?>" class="form-control" required="required" />
-																	<input type="hidden" name="borrower_id" value="<?php echo $fetch['borrower_id'] ?>" />
+																<div class="row">
+																	<div class="col">
+																		<div class="form-group">
+																			<label>Nome</label>
+																			<input type="text" name="firstname" value="<?php echo $fetch['firstname'] ?>" class="form-control"  />
+																			<input type="hidden" name="borrower_id" value="<?php echo $fetch['borrower_id'] ?>" />
+																		</div>
+																		<div class="form-group">
+																			<label>Nome do Meio</label>
+																			<input type="text" name="middlename" value="<?php echo $fetch['middlename'] ?>" class="form-control" />
+																		</div>
+																		<div class="form-group">
+																			<label>Sobrenome</label>
+																			<input type="text" name="lastname" value="<?php echo $fetch['lastname'] ?>" class="form-control"  />
+																		</div>
+																		<div class="form-group">
+																			<label>Número de Contato</label>
+																			<input type="tel" name="contact_no" value="<?php echo $fetch['contact_no'] ?>" class="form-control" placeholder="Ex.[0965 567 6544]"   />
+																		</div>
+																		<div class="form-group">
+																			<label>Endereço</label>
+																			<input type="text" name="address" value="<?php echo $fetch['address'] ?>" class="form-control" />
+																		</div>
+																		<div class="form-group">
+																			<label>Email</label>
+																			<input type="email" name="email" value="<?php echo $fetch['email'] ?>" class="form-control"  maxlength="30" />
+																		</div>
+																		<div class="form-group">
+																			<label>Identificação Fiscal (deve ser válida)</label>
+																			<input type="number" name="tax_id" min="0" value="<?php echo $fetch['tax_id'] ?>" class="form-control" />
+																		</div>
+																		<div class="form-group">
+																			<label for="data_nascimento">Data de Nascimento:</label>
+																			<input type="date" class="form-control" id="data_nascimento" name="data_nascimento" value="<?php echo $fetch['data_nascimento'] ?>">
+																		</div>
+
+																		<div class="form-group">
+																			<label for="nacionalidade">Nacionalidade:</label>
+																			<input type="text" class="form-control" id="nacionalidade" name="nacionalidade" value="<?php echo $fetch['nacionalidade'] ?>">
+																		</div>
+																		<div class="form-group">
+																			<label for="naturalidade">Naturalidade:</label>
+																			<input type="text" class="form-control" id="naturalidade" name="naturalidade" value="<?php echo $fetch['naturalidade'] ?>">
+																		</div>
+																		<div class="form-group">
+																			<label for="provincia">Província:</label>
+																			<input type="text" class="form-control" id="provincia" name="provincia" value="<?php echo $fetch['provincia'] ?>">
+																		</div>
+																	</div>
+																	<div class="col">
+																		<div class="form-group">
+																			<label for="borrowerSelect">Selecione o Estado Civil:</label>
+																			<select class="form-control" id="borrowerSelect" name="estado_civil">
+																				<option value="">Selecione um mutuário</option>
+																				<option value="solteriro">Solteiro</option>
+																				<option value="casado">Casado</option>
+																			</select>
+																		</div>
+																		<div class="form-group">
+																			<label for="sexo">Sexo:</label>
+																			<select class="form-control" id="sexo" name="sexo">
+																				<option value="">Selecione o Genero</option>
+																				<option value="m">Masculino</option>
+																				<option value="s">Femenino</option>
+																			</select>
+
+																		</div>
+																		<div class="form-group">
+																			<label for="profissao">Profissão:</label>
+																			<input type="text" class="form-control" id="profissao" name="profissao" value="<?php echo $fetch['profissao']?>">
+																		</div>
+																		<div class="form-group">
+																			<label for="residencia">Residência:</label>
+																			<input type="text" class="form-control" id="residencia" name="residencia" value="<?php echo $fetch['residencia']?>">
+																		</div>
+																		<div class="form-group">
+																			<label for="bairro">Bairro:</label>
+																			<input type="text" class="form-control" id="bairro" name="bairro" value="<?php echo $fetch['bairro']?>">
+																		</div>
+																		<div class="form-group">
+																			<label for="av_rua">Avenida/Rua:</label>
+																			<input type="text" class="form-control" id="av_rua" name="av_rua" value="<?php echo $fetch['av_rua']?>">
+																		</div>
+																		<div class="form-group">
+																			<label for="casa_flat_n">Casa/Flat Nº:</label>
+																			<input type="text" class="form-control" id="casa_flat_n" name="casa_flat_n" value="<?php echo $fetch['casa_flat_n']?>">
+																		</div>
+																		<div class="form-group">
+																			<label for="quarteirao">Quarteirão:</label>
+																			<input type="text" class="form-control" id="quarteirao" name="quarteirao" value="<?php echo $fetch['quarteirao']?>">
+																		</div>
+																		<div class="form-group">
+																			<label for="bi_passaport_n">Número de BI/Passaporte:</label>
+																			<input type="text" class="form-control" id="bi_passaport_n" name="bi_passaport_n" value="<?php echo $fetch['bi_passaport_n']?>">
+																		</div>
+																		<div class="form-group">
+																			<label for="emissor">Emissor:</label>
+																			<input type="text" class="form-control" id="emissor" name="emissor" value="<?php echo $fetch['emissor']?>">
+																		</div>
+																		<div class="form-group">
+																			<label for="data_emissao">Data de Emissão:</label>
+																			<input type="date" class="form-control" id="data_emissao" name="data_emissao" value="<?php echo $fetch['data_emissao']?>">
+																		</div>
+																	</div>
 																</div>
-																<div class="form-group">
-																	<label>Nome do Meio</label>
-																	<input type="text" name="middlename" value="<?php echo $fetch['middlename'] ?>" class="form-control" required="required" />
-																</div>
-																<div class="form-group">
-																	<label>Sobrenome</label>
-																	<input type="text" name="lastname" value="<?php echo $fetch['lastname'] ?>" class="form-control" required="required" />
-																</div>
-																<div class="form-group">
-																	<label>Número de Contato</label>
-																	<input type="tel" name="contact_no" value="<?php echo $fetch['contact_no'] ?>" class="form-control" placeholder="Ex.[0965 567 6544]" pattern="[0-9]{4} [0-9]{3} [0-9]{4}" required="required" />
-																</div>
-																<div class="form-group">
-																	<label>Endereço</label>
-																	<input type="text" name="address" value="<?php echo $fetch['address'] ?>" class="form-control" required="required" />
-																</div>
-																<div class="form-group">
-																	<label>Email</label>
-																	<input type="email" name="email" value="<?php echo $fetch['email'] ?>" class="form-control" required="required" maxlength="30" />
-																</div>
-																<div class="form-group">
-																	<label>Identificação Fiscal (deve ser válida)</label>
-																	<input type="number" name="tax_id" min="0" value="<?php echo $fetch['tax_id'] ?>" class="form-control" required="required" />
-																</div>
+
 															</div>
 															<div class="modal-footer">
 																<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>

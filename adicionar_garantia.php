@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Execute a consulta e verifique se foi bem-sucedida
     if ($conn2->query($query) === TRUE) {
-        header("Location: loan_details.php?id=$loan");
+        header("Location: loan_details.php?id=$loan&message=garantiasaproved");
     } else {
         echo "Erro ao adicionar garantia: " . $conn2->error;
     }

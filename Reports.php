@@ -66,7 +66,9 @@ if ($result) {
     <div id="wrapper">
 
         <!-- Barra Lateral -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" style=" background-color: #3d3747;
+  background-image: linear-gradient(180deg, #3d3747 10%, #3d3747 100%);
+  background-size: cover;" id="accordionSidebar">
 
             <!-- Barra Lateral - Marca -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="home.php">
@@ -188,28 +190,18 @@ if ($result) {
                         <div class='card-body'>
                             <form action="pesquisa_avancada.php" method="post">
                                 <div class="row">
-
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <label for="loanTypeSelect">Mutuário</label>
-                                            <select class="form-control" id="borrowerSelect" name="borrowerSelect">
-                                                <option value="">Selecione o Mutuário</option>
-                                            </select>
-                                        </div>
-                                    </div>
                                     <div class="col">
                                         <div class="form-group">
                                             <label for="loanTypeSelect">Gerente</label>
                                             <select class="form-control" id="managerSelect" name="managerSelect">
                                                 <option value="">Selecione o Gerente</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <label for="loanTypeSelect">Tipo de Empréstimo</label>
-                                            <select class="form-control" id="loanTypeSelect" name="loanTypeSelect">
-                                                <option value="">Selecione o Tipo de Emprestimo</option>
+                                                <?php 
+                                                    $tbl_user = $db->display_user();
+                                                    while($fetch = $tbl_user->fetch_array())
+                                                    {
+                                                        echo '<option value="'.$fetch["user_id"].'"> '.$fetch["firstname"].' '.$fetch["lastname"] .'</option>';
+                                                    }
+                                                ?>
                                             </select>
                                         </div>
                                     </div>
@@ -233,6 +225,7 @@ if ($result) {
                                             <label for="loanTypeSelect">Status de Empréstmos</label>
                                             <select class="form-control" id="loanStatusSelect" name="loanStatusSelect">
                                                 <option value="">Selecione o Status de Empréstimos</option>
+                                                <option value="all">Geral</option>
                                                 <option value="pendentes">Pendentes</option>
                                                 <option value="aprovados">Aprovados</option>
                                                 <option value="concluidos">Concluídos</option>
@@ -248,13 +241,37 @@ if ($result) {
                             <hr class="my-4">
                             <div class="mt-4">
                                 <div class="row">
+                                    <?php 
+                                    
+                                    if ($conn2->connect_error) {
+                                        die("Falha na conexão com o banco de dados: " . $conn2->connect_error);
+                                    }
+                                    
+                                    // Consulta para obter o total de entradas
+                                    $sqlEntradas = "SELECT SUM(valor_pagamento) AS total_entradas FROM payments";
+                                    $resultEntradas = $conn2->query($sqlEntradas);
+                                    $rowEntradas = $resultEntradas->fetch_assoc();
+                                    $totalEntradas = $rowEntradas['total_entradas'];
+                                    
+                                    // Consulta para obter o total de saídas
+                                    $sqlSaidas = "SELECT SUM(amount) AS total_saidas FROM loan";
+                                    $resultSaidas = $conn2->query($sqlSaidas);
+                                    $rowSaidas = $resultSaidas->fetch_assoc();
+                                    $totalSaidas = $rowSaidas['total_saidas'];
+                                    
+                                    // Calcular o lucro
+                                    $lucro = $totalEntradas - $totalSaidas;
+                                    
+                                    // Exibir o relatório
+                                
+                                    ?>
                                     <div class="col">   
                                         <h4 class="text-dark bord">Entradas</h4>
-                                        <p>2102 MT</p>
+                                        <p><?php echo $totalEntradas. " MT"; ?></p>
                                     </div>
                                     <div class="col">   
                                         <h4 class="text-dark bord">Saídas</h4>
-                                        <p>2102 MT</p>
+                                        <p><?php echo $totalSaidas . " MT";?></p>
                                     </div>
                                     <div class="col">   
                                         <h4 class="text-dark bord">Total de Empréstimos</h4>
@@ -263,7 +280,7 @@ if ($result) {
                                     <div class="col">   
                                         <h4 class="text-dark bord">Total de Mutuário</h4>
                                         <p>21</p>
-                                    </div>
+                                    </div> <?php ?>
                                 </div>
                             </div>
                         </div>

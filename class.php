@@ -88,14 +88,10 @@ class db_class extends db_connect
 
 
 
-
-
-
 	public function add_user($username, $password, $firstname, $lastname, $account_type)
 	{
 
-		
-
+	
 		$query = $this->conn->prepare("INSERT INTO `user` (`username`, `password`, `firstname`, `lastname`, `account_type`) VALUES(?, ?, ?, ?, ?)") or die($this->conn->error);
 		$query->bind_param("sssss", $username, $password, $firstname, $lastname, $account_type);
 
@@ -136,6 +132,7 @@ class db_class extends db_connect
 			);
 		}
 	}
+
 	public function hasPendingOrApprovedLoan($borrower_id)
 	{
 		// Consulta SQL para verificar se o mutuário possui um empréstimo pendente ou aprovado
@@ -341,13 +338,13 @@ class db_class extends db_connect
 			while ($row = $dataUser->fetch_assoc()) {
 				$account_type = $row['account_type'];
 				if ($account_type === 'gerente') {
-					$query = $this->conn->prepare("SELECT * FROM `loan` WHERE user_id = $user_id  AND status != 'concluído'") or die($this->conn->error);
+					$query = $this->conn->prepare("SELECT * FROM `loan` WHERE user_id = $user_id  AND status != 'concluído' AND status != 'negado'") or die($this->conn->error);
 					if ($query->execute()) {
 						$result = $query->get_result();
 						return $result;
 					}
 				} else {
-					$query = $this->conn->prepare("SELECT * FROM `loan` WHERE status != 'concluído'") or die($this->conn->error);
+					$query = $this->conn->prepare("SELECT * FROM `loan` WHERE status != 'concluído' AND status != 'negado'") or die($this->conn->error);
 					if ($query->execute()) {
 						$result = $query->get_result();
 						return $result;
@@ -499,10 +496,10 @@ class db_class extends db_connect
 		}
 	}
 
-	public function update_borrower($borrower_id, $firstname, $middlename, $lastname, $contact_no, $address, $email, $tax_id)
+	public function update_borrower($borrower_id, $firstname, $middlename, $lastname, $contact_no, $address, $email, $tax_id,  $data_nascimento, $nacionalidade, $naturalidade, $provincia, $bi_passaport_n, $emissor, $data_emissao, $estado_civil, $sexo, $profissao, $residencia, $bairro, $av_rua, $casa_flat_n, $quarteirao)
 	{
 		$query = $this->conn->prepare("UPDATE `borrower` SET `firstname`=?, `middlename`=?, `lastname`=?, `contact_no`=?, `address`=?, `email`=?, `tax_id`=? WHERE `borrower_id`=?") or die($this->conn->error);
-		$query->bind_param("ssssssii", $firstname, $middlename, $lastname, $contact_no, $address, $email, $tax_id, $borrower_id);
+		$query->bind_param("sssssssssssssssssssssii", $firstname, $middlename, $lastname, $contact_no, $address, $email,  $data_nascimento, $nacionalidade, $naturalidade, $provincia, $bi_passaport_n, $emissor, $data_emissao, $estado_civil, $sexo, $profissao, $residencia, $bairro, $av_rua, $casa_flat_n, $quarteirao, $tax_id, $borrower_id);
 
 		if ($query->execute()) {
 			$query->close();

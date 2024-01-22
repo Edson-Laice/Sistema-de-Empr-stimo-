@@ -62,7 +62,9 @@ $conn2->close();
     <div id="wrapper">
 
         <!-- Barra Lateral (Sidebar) -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" style=" background-color: #3d3747;
+  background-image: linear-gradient(180deg, #3d3747 10%, #3d3747 100%);
+  background-size: cover;" id="accordionSidebar">
 
             <!-- Marca da Barra Lateral -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="home.php">
@@ -140,6 +142,7 @@ $conn2->close();
 
                     <!-- Menu de Navegação Superior (Topbar) -->
                     <ul class="navbar-nav ml-auto">
+                       
 
                         <!-- Informações do Usuário - Item de Navegação -->
                         <li class="nav-item dropdown no-arrow">
@@ -149,6 +152,7 @@ $conn2->close();
                             </a>
                             <!-- Menu Suspenso - Informações do Usuário -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                                
                                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Sair
@@ -189,8 +193,7 @@ $conn2->close();
                                             
 
                                                 // Aguardar 2 segundos
-                                    
-
+                                
                                                 // Restante do código
                                                 if ($account_type === "gerente") {
                                                     $tbl_loan = $db->conn->query("SELECT * FROM `loan` WHERE `status`='aprovado' AND user_id = $user_id");

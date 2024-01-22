@@ -9904,14 +9904,14 @@ a:focus {
 }
 
 .bg-gradient-primary {
-  background-color: #13855c;
-  background-image: linear-gradient(180deg, #0eb952 10%, #0eb952 100%);
+  background-color: #3d3747;
+  background-image: linear-gradient(180deg, #3d3747 10%, #3d3747 100%);
   background-size: cover;
 }
 
 .bg-gradient-secondary {
-  background-color: #858796;
-  background-image: linear-gradient(180deg, #858796 10%, #60616f 100%);
+  background-color: #3d3747;
+  background-image: linear-gradient(180deg, #3d3747 10%, #3d3747 100%);
   background-size: cover;
 }
 

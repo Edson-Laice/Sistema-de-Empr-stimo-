@@ -3,6 +3,8 @@ date_default_timezone_set("Etc/GMT+8");
 require_once 'session.php';
 require_once 'class.php';
 require_once 'config.php';
+$chackBorrower = false;
+$chackLoanType = false;
 $user_id = $_SESSION['user_id'];
 $connection = new db_connect();
 include 'cf.php';
@@ -63,7 +65,9 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
     <div id="wrapper">
 
         <!-- Barra Lateral (Sidebar) -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" style=" background-color: #3d3747;
+  background-image: linear-gradient(180deg, #3d3747 10%, #3d3747 100%);
+  background-size: cover;" id="accordionSidebar">
 
             <!-- Marca da Barra Lateral -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="home.php">
@@ -181,18 +185,17 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                                             <div class="modal-body">
                                                 Solicitação de Empréstimo Recusada
                                             </div>
-                                            
+
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                    <?php
-                        }elseif($alert == 'aproved')
-                        {
-                            ?>
-                               <div class="container mt-4">
+                        <?php
+                        } elseif ($alert == 'aproved') {
+                        ?>
+                            <div class="container mt-4">
                                 <!-- Modal -->
-                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="myModelSolicitar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header bg-success">
@@ -204,12 +207,129 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                                             <div class="modal-body">
                                                 Solicitação Salva com Sucesso
                                             </div>
-                                            
+
                                         </div>
                                     </div>
                                 </div>
-                            </div> 
-                            <?php
+                            </div>
+                        <?php
+                        } elseif ($alert == 'emty') {
+                        ?>
+                            <div class="container mt-4">
+                                <!-- Modal -->
+                                <div class="modal fade" id="myModelSolicitar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="solicitarEmprestimoModalLabel">Solicitar Empréstimo</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="save_loan.php" method="post">
+
+                                                    <?php
+                                                    
+                                                    // Inclua o arquivo cf.php para obter a conexão
+                                                    include 'cf.php';
+
+                                                    // Consulta para buscar dados de borrower
+                                                    $queryBorrower = "SELECT * FROM borrower";
+                                                    $resultBorrower = $conn2->query($queryBorrower);
+
+                                                    // Verifica se a consulta de borrower foi executada com sucesso
+                                                    if (!$resultBorrower) {
+                                                        echo "Erro na consulta de mutuários: " . $conn2->error;
+                                                    } else {
+                                                        // Verifica se não há borrowers disponíveis
+                                                        if ($resultBorrower->num_rows == 0) {
+                                                            echo '<p>Nenhum mutuário disponível. Crie um mutuário primeiro.</p>';
+                                                            echo '<a class="btn btn-primary" href="borrower.php">Criar Mutuário</a>';
+                                                        } else {
+                                                            echo '<div class="form-group">
+                                    <label for="borrowerSelect">Selecione o Mutuário:</label>
+                                    <select class="form-control borrow" id="borrowerSelect" name="borrower_id" style="width:100%;">
+                                        <option selected="selected">Selecione um mutuário</option>';
+                                                            $chackBorrower = true;
+                                                            while ($row = $resultBorrower->fetch_assoc()) {
+                                                                echo '<option value="' . $row['borrower_id'] . '">' . $row['firstname'] . ' ' . $row['lastname'] . '</option>';
+                                                            }
+                                                            echo '</select>
+                                </div>';
+                                                        }
+                                                    }
+
+                                                    // Consulta para buscar dados de loan_type
+                                                    $queryLoanType = "SELECT ltype_id, ltype_name FROM loan_type";
+                                                    $resultLoanType = $conn2->query($queryLoanType);
+
+                                                    // Verifica se a consulta de loan_type foi executada com sucesso
+                                                    if (!$resultLoanType) {
+                                                        echo "Erro na consulta de tipos de empréstimo: " . $conn2->error;
+                                                    } else {
+                                                        // Verifica se não há loan_types disponíveis
+                                                        if ($resultLoanType->num_rows == 0) {
+                                                            echo '<p>Nenhum tipo de empréstimo disponível. Crie um tipo de empréstimo primeiro.</p>';
+                                                            echo '<a class="btn btn-primary" href="loan_type.php">Criar Tipo de Empréstimo</a>';
+                                                        } else {
+                                                            echo '<div class="form-group">
+                                                                <label for "loanTypeSelect">Selecione o Tipo de Empréstimo:</label>
+                                                                <select class="form-control" id="loanTypeSelect" name="loan_type_id">
+                                                                <option value="">Selecione um tipo de empréstimo</option>';
+                                                            while ($row = $resultLoanType->fetch_assoc()) {
+                                                                echo '<option value="' . $row['ltype_id'] . '">' . $row['ltype_name'] . '</option>';
+                                                            }
+                                                            echo '</select>
+                                    </div>'; $chackLoanType = true;
+                                                        }
+                                                       
+                                                    }
+                                                    ?>
+
+                                                    <?php
+                                                    if ($chackBorrower == true || $chackLoanType == true) {
+                                                    ?>
+                                                        <div class="form-group">
+                                                            <label for="amountInput">Quantia: <?php echo $chackBorrower; ?></label>
+                                                            <input type="text" class="form-control" placeholder="10000.00 MT" id="amountInput" name="amount">
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="interestRateInput">Taxa de Juros:</label>
+                                                            <input type="text" class="form-control" placeholder="25%" id="interestRateInput" name="interest_rate">
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="penaltyInput">Duração (Meses)</label>
+                                                            <input type="text" class="form-control" placeholder="1 = 1 mês" id="penaltyInput" name="duration_months">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="penaltyInput">Multa:</label>
+                                                            <input type="text" class="form-control" placeholder="10% ao dia" id="penaltyInput" name="penalty">
+                                                        </div>
+                                                        <input type="hidden" name="user_id" value="<?php echo $user_id ?>">
+                                                        <button type="submit" name="save" class="btn btn-primary" id="enviarSolicitacao">Enviar Solicitação</button>
+                                                    <?php
+                                                    }else{
+                                                        ?>
+
+                                                        <?php
+                                                    }
+                                                    ?>
+
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                    <?php
                         }
                     }
                     ?>
@@ -217,7 +337,7 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
 
 
 
-                    <!-- Bootstrap JS e jQuery (necessários para alguns recursos do Bootstrap) -->
+                    <!-- Bootstrap JS e jQuery (necessários para alguns recursos do Bootstrap -->
                     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
                     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
@@ -233,7 +353,7 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
 
                             // Atualize o contador a cada segundo
                             var countdown = setInterval(function() {
-                                $('#countdown').text( seconds );
+                                $('#countdown').text(seconds);
                                 seconds--;
 
                                 // Se o contador chegar a 0, feche o modal
@@ -243,7 +363,13 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                                 }
                             }, 1000);
                         });
-                    </script>'
+                    </script>
+
+                    <script>
+                        $(document).ready(function() {
+                            $('#myModelSolicitar').modal('show');
+                        });
+                    </script>
                     <!-- Título da Página -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Painel de Empréstimos</h1>
@@ -722,6 +848,7 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                             </div>
                             <input type="hidden" name="user_id" value="<?php echo $user_id ?>">
                             <button type="submit" name="save" class="btn btn-primary" id="enviarSolicitacao">Enviar Solicitação</button>
+
                         </form>
                     </div>
                     <div class="modal-footer">
