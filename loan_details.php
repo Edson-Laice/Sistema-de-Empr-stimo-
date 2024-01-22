@@ -283,7 +283,7 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                                 {
                             
                                 }else{
-                                    echo '<a href="print.php?borrower='. $row2["firstname"] .' ' . $row2["middlename"] . ' ' . $row2["lastname"] .'&Bi= '.$row2["bi_passaport_n"].'&natural='.$row2['naturalidade'].','.$row2['provincia'].'&bairro='.$row2['bairro'].'&quarteirao='.$row2['quarteirao'].'&contacto='.$row2['contact_no'].'&profissao='.$row2['profissao'].'&casa_n='.$row2['casa_flat_n'].'&valor='.$row['amount'].'&taxadejuros='.$row['interest_rate'].'&multa='.$row['penalty'].'&data='.$row['approval_date'].'&loanID='.$loanID.' " target="_blank" class="btn btn-warning">Imprimir Contracto</a>';
+                                    echo '<a href="print.php?borrower='. $row2["firstname"] .' ' . $row2["middlename"] . ' ' . $row2["lastname"] .'&Bi= '.$row2["bi_passaport_n"].'&natural='.$row2['naturalidade'].','.$row2['provincia'].'&bairro='.$row2['bairro'].'&quarteirao='.$row2['quarteirao'].'&contacto='.$row2['contact_no'].'&profissao='.$row2['profissao'].'&casa_n='.$row2['casa_flat_n'].'&valor='.$row['amount'].'&taxadejuros='.$row['interest_rate'].'&multa='.$row['penalty'].'&data='.$row['approval_date'].'&loanID='.$loanID.'&employer='.$row['employment_type'].'&startdate='.$row['start_date'].'&income='.$row['income_type'].' " target="_blank" class="btn btn-warning">Imprimir Contracto</a>';
                                 }
                                 
 

@@ -25,6 +25,18 @@ $multa = "";
 $valorTotal = "";
 $data = "";
 $loanID = "";
+$employment = "";
+$start_date = "";
+$income = "";
+
+if(isset($_GET['employer']))
+$employment = $_GET['employer'];
+
+if(isset($_GET['startdate']))
+$start_date = $_GET['startdate'];
+
+if(isset($_GET['income']))
+$income = $_GET['income'];
 
 if(isset($_GET['borrower']))
 $borrower = $_GET['borrower'];
@@ -105,10 +117,12 @@ $loanID = $_GET['loanID'];
   com poderes suficientes para o presente acto, doravante denominado <strong>MUTUANTE (Credor)</strong> . </p>
 <p>E</p>
 
+<?php $ano = substr($start_date, 0, 4); ?>
+
 <p> A Senhora <?php echo $borrower; ?> Portador do Passporte Nº <?php echo $Bi;?>, Natural de 
 <?php echo $natural;?> residente no Bairro de <?php echo $bairro?> Quarteirão <?php echo $quarteirao?>, Casa n°<?php echo $casa;?> Distrito Municipal 
- Matola , telemóveis: <?php echo $contacto?> Exerce funções de <?php echo $profissao?>, conta própria, desde 2013, tem receitas
-  líquidas de 9.000,00MT mensalmente. Daqui em diante designado (a) por <strong>MUTUÁRIO</strong> </p> 
+ Matola , telemóveis: <?php echo $contacto?> Exerce funções de <?php echo $profissao?>, <?php echo $employment;?>, desde <?php echo $ano;?>, tem receitas
+  líquidas de <?php echo number_format($income , 2)?> MT mensalmente. Daqui em diante designado (a) por <strong>MUTUÁRIO</strong> </p> 
 
 <p> <strong> (Devedor/a)</strong></p>  
 
@@ -121,7 +135,7 @@ nos termos regido pelos seguintes artigos: </p>
 <p>O presente contrato tem por objecto regular a concessão de empréstimo á Devedor(a)
  nas condições descritas no presente contrato de financiamento é com a finalidade de investimento no negócio.</p>
 
- <p style="text-align: center;"><strong>Artigo 2°</strong></p> 
+<p style="text-align: center;"><strong>Artigo 2°</strong></p> 
 <p style="text-align: center;"><strong>(Montagem e taxa de juro) </strong></p>
 
 <p>O valor concedido é de <?php echo number_format($valor, 2);  $extenso = numero($valor);?> (<?php echo $extenso;?>), à taxa de juro Mensal de <?php echo $taxaDeJuros;?>%, sendo que,

@@ -227,10 +227,14 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                                                 </button>
                                             </div>
                                             <div class="modal-body">
+
+                                                <div class="alert alert-warning" role="alert">
+                                                    <strong>Aviso:</strong> Campos vazios encotrados.
+                                                </div>
                                                 <form action="save_loan.php" method="post">
 
                                                     <?php
-                                                    
+
                                                     // Inclua o arquivo cf.php para obter a conexão
                                                     include 'cf.php';
 
@@ -281,42 +285,58 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                                                                 echo '<option value="' . $row['ltype_id'] . '">' . $row['ltype_name'] . '</option>';
                                                             }
                                                             echo '</select>
-                                    </div>'; $chackLoanType = true;
+                                    </div>';
+                                                            $chackLoanType = true;
                                                         }
-                                                       
                                                     }
                                                     ?>
 
-                                                    <?php
-                                                    if ($chackBorrower == true || $chackLoanType == true) {
-                                                    ?>
-                                                        <div class="form-group">
-                                                            <label for="amountInput">Quantia: <?php echo $chackBorrower; ?></label>
-                                                            <input type="text" class="form-control" placeholder="10000.00 MT" id="amountInput" name="amount">
-                                                        </div>
 
-                                                        <div class="form-group">
-                                                            <label for="interestRateInput">Taxa de Juros:</label>
-                                                            <input type="text" class="form-control" placeholder="25%" id="interestRateInput" name="interest_rate">
-                                                        </div>
+                                                    <div class="form-group">
+                                                        <label for="amountInput">Quantia: <?php echo $chackBorrower; ?></label>
+                                                        <input type="text" class="form-control" placeholder="10000.00 MT" id="amountInput" name="amount">
+                                                    </div>
 
-                                                        <div class="form-group">
-                                                            <label for="penaltyInput">Duração (Meses)</label>
-                                                            <input type="text" class="form-control" placeholder="1 = 1 mês" id="penaltyInput" name="duration_months">
+                                                    <div class="form-group">
+                                                        <label for="interestRateInput">Taxa de Juros:</label>
+                                                        <input type="text" class="form-control" placeholder="25%" id="interestRateInput" name="interest_rate">
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="penaltyInput">Duração (Meses):</label>
+                                                        <input type="text" class="form-control" placeholder="1 = 1 mês" id="penaltyInput" name="duration_months">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="penaltyInput">Multa:</label>
+                                                        <input type="text" class="form-control" placeholder="10% ao dia" id="penaltyInput" name="penalty">
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <label for="">Rendimento:</label>
+                                                            <select class="form-control" name="rendimento" id="rendimentoSelect">
+                                                                <option value="">Selecione o Rendimento</option>
+                                                                <option value="Conta Própria">Conta Própria</option>
+                                                                <option value="Assalariado">Assalariado</option>
+                                                            </select>
                                                         </div>
-                                                        <div class="form-group">
-                                                            <label for="penaltyInput">Multa:</label>
-                                                            <input type="text" class="form-control" placeholder="10% ao dia" id="penaltyInput" name="penalty">
+                                                        <div class="col">
+                                                            <label for="">Inicio da Actividade</label>
+                                                            <input type="date" name="dataIn" id="data" class="form-control" step="1" require>
                                                         </div>
-                                                        <input type="hidden" name="user_id" value="<?php echo $user_id ?>">
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <label for="">Receita Liquida:</label>
+                                                            <input type="text" name="receita" id="receita" class="form-control" placeholder="10000 MT" require>
+                                                        </div>
+                                                    </div>
+                                                    <input type="hidden" name="user_id" value="<?php echo $user_id ?>">
+                                                    <br>
+                                                    <div class="form-group">
                                                         <button type="submit" name="save" class="btn btn-primary" id="enviarSolicitacao">Enviar Solicitação</button>
-                                                    <?php
-                                                    }else{
-                                                        ?>
+                                                    </div>
 
-                                                        <?php
-                                                    }
-                                                    ?>
 
                                                 </form>
                                             </div>
@@ -773,6 +793,7 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                         <form action="save_loan.php" method="post">
 
                             <?php
+
                             // Inclua o arquivo cf.php para obter a conexão
                             include 'cf.php';
 
@@ -790,14 +811,15 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                                     echo '<a class="btn btn-primary" href="borrower.php">Criar Mutuário</a>';
                                 } else {
                                     echo '<div class="form-group">
-                                    <label for="borrowerSelect">Selecione o Mutuário:</label>
-                                    <select class="form-control borrow" id="borrowerSelect" name="borrower_id" style="width:100%;">
-                                        <option selected="selected">Selecione um mutuário</option>';
+<label for="borrowerSelect">Selecione o Mutuário:</label>
+<select class="form-control borrow" id="borrowerSelect" name="borrower_id" style="width:100%;">
+<option selected="selected">Selecione um mutuário</option>';
+                                    $chackBorrower = true;
                                     while ($row = $resultBorrower->fetch_assoc()) {
                                         echo '<option value="' . $row['borrower_id'] . '">' . $row['firstname'] . ' ' . $row['lastname'] . '</option>';
                                     }
                                     echo '</select>
-                                </div>';
+</div>';
                                 }
                             }
 
@@ -815,21 +837,22 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                                     echo '<a class="btn btn-primary" href="loan_type.php">Criar Tipo de Empréstimo</a>';
                                 } else {
                                     echo '<div class="form-group">
-                                        <label for "loanTypeSelect">Selecione o Tipo de Empréstimo:</label>
-                                        <select class="form-control" id="loanTypeSelect" name="loan_type_id">
-                                            <option value="">Selecione um tipo de empréstimo</option>';
+            <label for "loanTypeSelect">Selecione o Tipo de Empréstimo:</label>
+            <select class="form-control" id="loanTypeSelect" name="loan_type_id">
+            <option value="">Selecione um tipo de empréstimo</option>';
                                     while ($row = $resultLoanType->fetch_assoc()) {
                                         echo '<option value="' . $row['ltype_id'] . '">' . $row['ltype_name'] . '</option>';
                                     }
                                     echo '</select>
-                                    </div>';
+</div>';
+                                    $chackLoanType = true;
                                 }
                             }
                             ?>
 
 
                             <div class="form-group">
-                                <label for="amountInput">Quantia:</label>
+                                <label for="amountInput">Quantia: <?php echo $chackBorrower; ?></label>
                                 <input type="text" class="form-control" placeholder="10000.00 MT" id="amountInput" name="amount">
                             </div>
 
@@ -839,15 +862,40 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                             </div>
 
                             <div class="form-group">
-                                <label for="penaltyInput">Duração (Meses)</label>
+                                <label for="penaltyInput">Duração (Meses):</label>
                                 <input type="text" class="form-control" placeholder="1 = 1 mês" id="penaltyInput" name="duration_months">
                             </div>
                             <div class="form-group">
                                 <label for="penaltyInput">Multa:</label>
                                 <input type="text" class="form-control" placeholder="10% ao dia" id="penaltyInput" name="penalty">
                             </div>
+                            <div class="row">
+                                <div class="col">
+                                    <label for="">Rendimento:</label>
+                                    <select class="form-control" name="rendimento" id="rendimentoSelect">
+                                        <option value="">Selecione o Rendimento</option>
+                                        <option value="0">Conta Própria</option>
+                                        <option value="1">Assalariado</option>
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <label for="">Inicio da Actividade</label>
+                                    <input type="date" name="dataIn" id="data" class="form-control" step="1" require>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <label for="">Receita Liquida:</label>
+                                    <input type="text" name="receita" id="receita" class="form-control" placeholder="10000 MT" require>
+                                </div>
+                            </div>
                             <input type="hidden" name="user_id" value="<?php echo $user_id ?>">
-                            <button type="submit" name="save" class="btn btn-primary" id="enviarSolicitacao">Enviar Solicitação</button>
+                            <br>
+                            <div class="form-group">
+                                <button type="submit" name="save" class="btn btn-primary" id="enviarSolicitacao">Enviar Solicitação</button>
+                            </div>
+
 
                         </form>
                     </div>

@@ -4,7 +4,17 @@ require_once 'class.php';
 
 // Verifique se o formulário foi enviado
 if (isset($_POST['save'])) {
-    if ($_POST['loan_type_id'] == "" && $_POST['amount'] == "" && $interest_rate = $_POST['interest_rate'] == "" && $_POST['penalty'] == "" && $_POST['duration_months'] == "" && $_POST['user_id']) {
+    if (
+        $_POST['loan_type_id'] == "" ||
+        $_POST['amount'] == "" ||
+        $_POST['interest_rate'] == "" ||
+        $_POST['penalty'] == "" ||
+        $_POST['duration_months'] == ""||
+        $_POST['user_id'] == "" ||
+        $_POST['rendimento'] == "" ||
+        $_POST['dataIn'] == "" ||
+        $_POST['receita'] == ""
+    ) {
         header("location: loan.php?message=emty");
     } else {
         $db = new db_class();
@@ -29,9 +39,12 @@ if (isset($_POST['save'])) {
         $penalty = $_POST['penalty'];
         $duration_months = $_POST['duration_months'];
         $user_id = $_POST['user_id'];
-
+        $employment_type = $_POST['rendimento'];
+        $start_date = $_POST['dataIn'];
+        $income_type = $_POST['receita'];
+        echo "Emprego: " . $employment_type . "<br>";
         // Chame a função de inserção do empréstimo
-        $result = $db->insertLoan($borrower_id, $loan_type_id, $amount, $interest_rate, $penalty, $duration_months, $user_id);
+        $result = $db->insertLoan($borrower_id, $loan_type_id, $amount, $interest_rate, $penalty, $duration_months, $user_id, $employment_type,$income_type,  $start_date);
 
         if ($result) {
             // Redirecione para uma página de sucesso ou faça o que for necessário após a inserção bem-sucedida
@@ -42,3 +55,4 @@ if (isset($_POST['save'])) {
         }
     }
 }
+?>

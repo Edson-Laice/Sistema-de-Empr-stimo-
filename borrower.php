@@ -436,10 +436,10 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
 		</a>
 
 		<!-- Modal de Adicionar Tomador -->
-		<div class="modal fade" id="addModal" aria-hidden="true" style="justify-content:center; align-items:center;">
+		<div class="modal fade" id="addModal" aria-hidden="true">
 			<div class="modal-dialog">
 				<form method="POST" action="save_borrower.php">
-					<div class="modal-content" style="width: 900px;">
+					<div class="modal-content" >
 						<div class="modal-header">
 							<h5 class="modal-title ">Formulário do Mutuário</h5>
 							<button class="close" type="button" data-dismiss="modal" aria-label="Close">

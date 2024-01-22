@@ -91,7 +91,7 @@ class db_class extends db_connect
 	public function add_user($username, $password, $firstname, $lastname, $account_type)
 	{
 
-	
+
 		$query = $this->conn->prepare("INSERT INTO `user` (`username`, `password`, `firstname`, `lastname`, `account_type`) VALUES(?, ?, ?, ?, ?)") or die($this->conn->error);
 		$query->bind_param("sssss", $username, $password, $firstname, $lastname, $account_type);
 
@@ -208,7 +208,7 @@ class db_class extends db_connect
 	}
 
 	/**Loan Function */
-	public function insertLoan($borrower_id, $loan_type_id, $amount, $interest_rate, $penalty, $duration_months, $user_id)
+	public function insertLoan($borrower_id, $loan_type_id, $amount, $interest_rate, $penalty, $duration_months, $user_id, $employment_type, $income_type, $start_date)
 	{
 		// Gere um número de referência único
 		$ref = mt_rand(1, 99999999);
@@ -219,10 +219,10 @@ class db_class extends db_connect
 		// Defina o status como "pendente" por padrão
 		$status = 'pendente';
 
-		$query = $this->conn->prepare("INSERT INTO `loan` (`ref`, `borrower_id`, `loan_type_id`, `amount`, `interest_rate`, `penalty`, `status`, `release_date`, `duration_months`, `user_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		$query = $this->conn->prepare("INSERT INTO `loan` (`ref`, `borrower_id`, `loan_type_id`, `amount`, `interest_rate`, `penalty`, `status`, `release_date`, `duration_months`, `user_id`, `employment_type`, `income_type`, `start_date`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 		if ($query) {
-			$query->bind_param("siiddsssii", $ref, $borrower_id, $loan_type_id, $amount, $interest_rate, $penalty, $status, $release_date, $duration_months, $user_id);
+			$query->bind_param("siiddsssiiiss", $ref, $borrower_id, $loan_type_id, $amount, $interest_rate, $penalty, $status, $release_date, $duration_months, $user_id, $employment_type, $income_type, $start_date);
 
 			if ($query->execute()) {
 				$query->close();
@@ -237,6 +237,7 @@ class db_class extends db_connect
 
 		return false;
 	}
+
 
 
 
